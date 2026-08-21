@@ -40,6 +40,11 @@
   .btn-mail{background:var(--navy);color:#fff}
   .btn-mail:hover{background:var(--navy-2)}
   .btn-sm{padding:6px 13px;font-size:12px}
+  /* Token status light */
+  .token-light{display:flex;align-items:center;gap:8px;padding:9px 15px;border-radius:980px;background:rgba(255,255,255,.14);color:#fff;font-size:12px;font-weight:500;cursor:pointer;transition:.18s}
+  .token-light:hover{background:rgba(255,255,255,.24)}
+  .token-light .dot{width:10px;height:10px;border-radius:50%;background:#37d67a;box-shadow:0 0 8px rgba(55,214,122,.85)}
+  .token-light.off .dot{background:#9aa4b2;box-shadow:none}
   .layout{display:flex;min-height:calc(100vh - 110px);padding:18px 22px 22px;gap:22px}
   aside{width:280px;background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);height:fit-content}
   aside h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 12px;font-weight:600}
@@ -119,6 +124,9 @@
   </div>
   <div class="spacer"></div>
   <div class="toolbar">
+    <div class="token-light off" id="tokenLight" onclick="manageToken()" title="Token status">
+      <span class="dot"></span><span id="tokenLabel">Token</span>
+    </div>
     <button class="btn-ghost" onclick="exportData()">Export</button>
     <button class="btn-ghost" onclick="document.getElementById('importFile').click()">Import</button>
     <input type="file" id="importFile" accept=".json" onchange="importData(event)" />
@@ -298,6 +306,26 @@ let pendingFile = undefined;
 function load(){ try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const o=JSON.parse(raw); if(!o.contacts) o.contacts=[]; return o; } }catch(e){} return JSON.parse(JSON.stringify(SEED)); }
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
 
+/* ---- Token status light ---- */
+const TOKEN_KEY="4sight_legal_hub_token";
+function renderTokenLight(){
+  const t=localStorage.getItem(TOKEN_KEY);
+  const el=document.getElementById('tokenLight'); const lbl=document.getElementById('tokenLabel');
+  if(t){ el.classList.remove('off'); el.title="Token connected — click to update or remove"; lbl.textContent="Token Connected"; }
+  else{ el.classList.add('off'); el.title="No token set — click to add a GitHub token"; lbl.textContent="Token"; }
+}
+function manageToken(){
+  const cur=localStorage.getItem(TOKEN_KEY);
+  if(cur){
+    if(confirm("A token is currently saved.\n\nOK = update it   |   Cancel = remove it")){
+      const t=prompt("Enter GitHub token:",""); if(t!==null && t.trim()) localStorage.setItem(TOKEN_KEY,t.trim());
+    } else { localStorage.removeItem(TOKEN_KEY); }
+  } else {
+    const t=prompt("Enter a GitHub token to enable sync:",""); if(t && t.trim()) localStorage.setItem(TOKEN_KEY,t.trim());
+  }
+  renderTokenLight();
+}
+
 /* File store (IndexedDB) */
 let _idb;
 function idb(){ if(_idb) return Promise.resolve(_idb); return new Promise((res,rej)=>{const req=indexedDB.open("4sight_legal_files",1);req.onupgradeneeded=e=>e.target.result.createObjectStore("files");req.onsuccess=e=>{_idb=e.target.result;res(_idb);};req.onerror=rej;}); }
@@ -468,7 +496,7 @@ function deleteContact(id){
 function exportData(){ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="data.json"; a.click(); }
 function importData(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{ try{ const obj=JSON.parse(e.target.result); if(!obj.folders||!obj.docs) throw 0; if(!obj.contacts) obj.contacts=[]; if(!confirm("Import will replace current data. Continue?")) return; db=obj; currentFolder="__ALL__"; save(); render(); if(currentTab==='contacts') renderContacts(); alert("Imported successfully."); }catch(err){ alert("Could not import: invalid data file."); } }; r.readAsText(file); ev.target.value=""; }
 
-(async function boot(){ if(!localStorage.getItem(STORE_KEY)){ try{ const res=await fetch('data.json',{cache:'no-store'}); if(res.ok){ const obj=await res.json(); if(obj.folders&&obj.docs){ if(!obj.contacts) obj.contacts=[]; db=obj; save(); } } }catch(e){} } render(); })();
+(async function boot(){ if(!localStorage.getItem(STORE_KEY)){ try{ const res=await fetch('data.json',{cache:'no-store'}); if(res.ok){ const obj=await res.json(); if(obj.folders&&obj.docs){ if(!obj.contacts) obj.contacts=[]; db=obj; save(); } } }catch(e){} } renderTokenLight(); render(); })();
 </script>
 </body>
 </html>
