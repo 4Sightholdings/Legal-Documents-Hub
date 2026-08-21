@@ -1,90 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>4Sight Legal Documents Hub</title>
 <style>
   :root{
-    --navy:#0f2749;
-    --navy-2:#163a6b;
-    --gold:#c9a227;
-    --bg:#f4f6f9;
-    --card:#ffffff;
-    --line:#e2e8f0;
-    --text:#1e293b;
-    --muted:#64748b;
-    --danger:#dc2626;
-    --ok:#16a34a;
-    --warn:#d97706;
+    --navy:#12233f; --navy2:#1b3a63; --gold:#c9a227; --gold-dark:#a9861a;
+    --bg:#f4f6f9; --card:#ffffff; --line:#e2e7ee; --text:#1f2a3a; --muted:#6b7789;
+    --red:#c0392b; --red-bg:#fdecea; --amber:#b7791f; --amber-bg:#fdf3e2; --green:#2f855a; --green-bg:#e8f5ee;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-  header{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:18px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  header .brand{display:flex;align-items:center;gap:12px}
-  header .logo{width:44px;height:44px;border-radius:8px;background:var(--gold);color:var(--navy);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:20px}
-  header h1{font-size:20px;margin:0;font-weight:700}
-  header p{margin:2px 0 0;font-size:12px;color:#cbd5e1}
-  header .spacer{flex:1}
-  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
-  button{cursor:pointer;border:none;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:600;transition:.15s}
-  .btn-gold{background:var(--gold);color:var(--navy)}
-  .btn-gold:hover{filter:brightness(1.08)}
-  .btn-light{background:rgba(255,255,255,.14);color:#fff}
-  .btn-light:hover{background:rgba(255,255,255,.24)}
-  .btn-outline{background:#fff;color:var(--navy);border:1px solid var(--line)}
-  .btn-outline:hover{background:#f1f5f9}
-  .btn-danger{background:#fee2e2;color:var(--danger)}
-  .btn-danger:hover{background:#fecaca}
-  .btn-sm{padding:5px 10px;font-size:12px}
-  .layout{display:flex;min-height:calc(100vh - 82px)}
-  aside{width:290px;background:var(--card);border-right:1px solid var(--line);padding:16px;overflow-y:auto}
-  aside h2{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:0 0 10px}
-  .folder{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;font-size:14px}
-  .folder:hover{background:#f1f5f9}
-  .folder.active{background:var(--navy);color:#fff}
-  .folder .count{margin-left:auto;font-size:11px;background:#e2e8f0;color:var(--muted);border-radius:20px;padding:1px 8px}
-  .folder.active .count{background:var(--gold);color:var(--navy)}
-  .folder .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  main{flex:1;padding:22px 26px;overflow-y:auto}
-  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:130px}
-  .stat .num{font-size:26px;font-weight:800;color:var(--navy)}
-  .stat .lbl{font-size:12px;color:var(--muted);margin-top:2px}
-  .stat.exp .num{color:var(--danger)}
-  .stat.soon .num{color:var(--warn)}
-  .panel-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-  .panel-head h2{margin:0;font-size:20px;color:var(--navy)}
-  .panel-head .spacer{flex:1}
-  .search{padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;min-width:220px}
-  table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-  th{background:var(--navy);color:#fff;text-align:left;padding:11px 14px;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
-  td{padding:11px 14px;border-top:1px solid var(--line);font-size:13px;vertical-align:middle}
-  tr:hover td{background:#f8fafc}
-  .pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700}
-  .pill.ok{background:#dcfce7;color:var(--ok)}
-  .pill.warn{background:#fef3c7;color:var(--warn)}
-  .pill.exp{background:#fee2e2;color:var(--danger)}
-  .pill.none{background:#e2e8f0;color:var(--muted)}
-  .empty{padding:50px;text-align:center;color:var(--muted)}
-  .row-actions{display:flex;gap:6px}
-  /* Modal */
-  .overlay{position:fixed;inset:0;background:rgba(15,39,73,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  body{margin:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  header{background:var(--navy);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  header .brand{display:flex;align-items:center;gap:14px}
+  header .logo{width:42px;height:42px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--navy);font-size:20px}
+  header h1{font-size:20px;margin:0;font-weight:600;letter-spacing:.3px}
+  header .sub{font-size:12px;color:#9fb2cc}
+  .wrap{max-width:1240px;margin:0 auto;padding:24px}
+  /* stat cards */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(20,35,63,.05)}
+  .stat .n{font-size:30px;font-weight:800;line-height:1}
+  .stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:8px}
+  .stat.total .n{color:var(--navy)} .stat.soon .n{color:var(--amber)} .stat.exp .n{color:var(--red)} .stat.ok .n{color:var(--green)}
+  /* tabs */
+  .tabs{display:flex;gap:6px;margin-bottom:18px}
+  .tab{padding:10px 20px;border-radius:9px 9px 0 0;background:transparent;border:none;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted)}
+  .tab.active{background:var(--card);color:var(--navy);box-shadow:0 -2px 0 var(--gold) inset}
+  .panel{display:none} .panel.active{display:block}
+  .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  select,input,textarea{font-family:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--text)}
+  select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.15)}
+  .btn{cursor:pointer;border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px}
+  .btn.gold{background:var(--gold);color:var(--navy)} .btn.gold:hover{background:var(--gold-dark);color:#fff}
+  .btn.navy{background:var(--navy);color:#fff} .btn.navy:hover{background:var(--navy2)}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--text)} .btn.ghost:hover{border-color:var(--gold)}
+  .btn.sm{padding:6px 12px;font-size:12.5px}
+  .btn.danger{background:#fff;border:1px solid var(--red);color:var(--red)} .btn.danger:hover{background:var(--red-bg)}
+  .grow{flex:1}
+  /* table */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(20,35,63,.05)}
+  table{width:100%;border-collapse:collapse}
+  th{background:#f8fafc;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line)}
+  td{padding:13px 14px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafbfd}
+  .badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+  .badge.red{background:var(--red-bg);color:var(--red)} .badge.amber{background:var(--amber-bg);color:var(--amber)} .badge.green{background:var(--green-bg);color:var(--green)} .badge.grey{background:#eef1f5;color:var(--muted)}
+  .ent{font-size:11px;color:var(--muted)}
+  .filelink{color:var(--navy2);text-decoration:none;font-weight:600;font-size:12.5px}
+  .filelink:hover{text-decoration:underline}
+  .nofile{color:var(--muted);font-size:12px}
+  .owner-cell{font-size:12.5px}
+  .owner-cell .om{color:var(--muted);font-size:11px}
+  .empty{padding:44px;text-align:center;color:var(--muted)}
+  .row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(18,35,63,.55);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:50;overflow-y:auto}
   .overlay.show{display:flex}
-  .modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-  .modal header{background:var(--navy);border-radius:14px 14px 0 0}
-  .modal .body{padding:20px}
-  .modal h3{margin:0;font-size:17px}
-  .field{margin-bottom:14px}
-  .field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
-  .field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit}
-  .field textarea{resize:vertical;min-height:60px}
-  .modal-foot{display:flex;gap:10px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--line)}
-  .hint{font-size:11px;color:var(--muted);margin-top:4px}
-  a.doclink{color:var(--navy-2);font-weight:600;text-decoration:none}
-  a.doclink:hover{text-decoration:underline}
-  .footnote{font-size:11px;color:var(--muted);text-align:center;padding:16px}
-  input[type=file]{display:none}
+  .modal{background:#fff;border-radius:14px;width:100%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;animation:pop .15s ease}
+  @keyframes pop{from{transform:translateY(10px);opacity:.6}to{transform:translateY(0);opacity:1}}
+  .modal .mhead{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .modal .mhead h3{margin:0;font-size:17px;color:var(--navy)}
+  .modal .mbody{padding:22px 24px;max-height:70vh;overflow-y:auto}
+  .modal .mfoot{padding:16px 24px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:#fbfcfe}
+  .fld{margin-bottom:16px}
+  .fld label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:6px}
+  .fld input,.fld select,.fld textarea{width:100%}
+  .fld .hint{font-size:11.5px;color:var(--navy2);margin-top:5px}
+  .filebox{border:1.5px dashed var(--line);border-radius:9px;padding:16px;text-align:center;cursor:pointer;transition:.15s}
+  .filebox:hover{border-color:var(--gold);background:#fffdf5}
+  .filebox .fn{font-size:13px;color:var(--navy);font-weight:600;margin-top:6px;word-break:break-all}
+  .close{cursor:pointer;font-size:22px;color:var(--muted);background:none;border:none}
+  /* email draft */
+  .maildraft label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
+  .maildraft .line{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .maildraft .line span{color:var(--muted);display:inline-block;min-width:70px}
+  .maildraft textarea{width:100%;min-height:230px;margin-top:8px;line-height:1.55}
+  /* glowing status dot */
+  .statusdot{width:16px;height:16px;border-radius:50%;cursor:pointer;border:none;padding:0;position:relative;transition:transform .15s}
+  .statusdot:hover{transform:scale(1.18)}
+  .statusdot.green{background:#2ecc71;box-shadow:0 0 6px #2ecc71,0 0 12px #2ecc71;animation:pulseG 1.8s infinite}
+  .statusdot.yellow{background:#f1c40f;box-shadow:0 0 6px #f1c40f,0 0 12px #f1c40f;animation:pulseY 1.8s infinite}
+  .statusdot.red{background:#e74c3c;box-shadow:0 0 6px #e74c3c,0 0 12px #e74c3c;animation:pulseR 1.8s infinite}
+  @keyframes pulseG{0%,100%{box-shadow:0 0 5px #2ecc71,0 0 10px #2ecc71}50%{box-shadow:0 0 10px #2ecc71,0 0 20px #2ecc71}}
+  @keyframes pulseY{0%,100%{box-shadow:0 0 5px #f1c40f,0 0 10px #f1c40f}50%{box-shadow:0 0 10px #f1c40f,0 0 20px #f1c40f}}
+  @keyframes pulseR{0%,100%{box-shadow:0 0 5px #e74c3c,0 0 10px #e74c3c}50%{box-shadow:0 0 10px #e74c3c,0 0 20px #e74c3c}}
+  @media(max-width:820px){.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -93,406 +96,467 @@
     <div class="logo">4S</div>
     <div>
       <h1>Legal Documents Hub</h1>
-      <p>Central register of legal documents, agreements &amp; expiry reminders</p>
+      <div class="sub">Expiry tracking &amp; owner notifications</div>
     </div>
   </div>
-  <div class="spacer"></div>
-  <div class="toolbar">
-    <button class="btn-light" onclick="exportData()">⬇ Export (backup)</button>
-    <button class="btn-light" onclick="document.getElementById('importFile').click()">⬆ Import</button>
-    <input type="file" id="importFile" accept=".json" onchange="importData(event)" />
-    <button class="btn-gold" onclick="openDocModal()">＋ Add Document</button>
+  <div style="display:flex;align-items:center;gap:18px">
+    <button id="statusDot" class="statusdot red" title="Token: disconnected — click for settings" onclick="openToken()"></button>
+    <button class="btn gold" onclick="openDoc()">＋ Add Document</button>
   </div>
 </header>
 
-<div class="layout">
-  <aside>
-    <h2>Entities / Folders</h2>
-    <div id="folderList"></div>
-    <button class="btn-outline btn-sm" style="width:100%;margin-top:10px" onclick="openFolderModal()">＋ Add Folder</button>
-  </aside>
+<div class="wrap">
+  <div class="stats">
+    <div class="stat total"><div class="n" id="s-total">0</div><div class="l">Total Documents</div></div>
+    <div class="stat soon"><div class="n" id="s-soon">0</div><div class="l">Expiring ≤ 30 Days</div></div>
+    <div class="stat exp"><div class="n" id="s-exp">0</div><div class="l">Expired</div></div>
+    <div class="stat ok"><div class="n" id="s-ok">0</div><div class="l">Valid</div></div>
+  </div>
 
-  <main>
-    <div class="stats" id="stats"></div>
-    <div class="panel-head">
-      <h2 id="currentFolderName">All Documents</h2>
-      <span id="folderTools"></span>
-      <div class="spacer"></div>
-      <input class="search" id="searchBox" placeholder="🔍 Search documents…" oninput="render()" />
-    </div>
-    <div id="tableWrap"></div>
-    <div class="footnote">Data is saved automatically in this browser. Use <b>Export</b> to back up or commit <code>data.json</code> to GitHub.</div>
-  </main>
-</div>
+  <div class="tabs">
+    <button class="tab active" data-tab="docs" onclick="switchTab('docs')">📄 Documents</button>
+    <button class="tab" data-tab="contacts" onclick="switchTab('contacts')">👤 Contacts / Owners</button>
+  </div>
 
-<!-- Document Modal -->
-<div class="overlay" id="docOverlay">
-  <div class="modal">
-    <header style="padding:16px 20px"><h3 id="docModalTitle">Add Document</h3></header>
-    <div class="body">
-      <input type="hidden" id="docId" />
-      <div class="field">
-        <label>Folder / Entity</label>
-        <select id="docFolder"></select>
-      </div>
-      <div class="field">
-        <label>Document Name</label>
-        <input id="docName" placeholder="e.g. Company Registration Certificate" />
-      </div>
-      <div class="field">
-        <label>Document Type</label>
-        <input id="docType" placeholder="e.g. Certificate, Agreement, Registration" list="typeList" />
-        <datalist id="typeList">
-          <option>Agreement</option><option>Certificate</option><option>Registration</option>
-          <option>Corporate Profile</option><option>Licence</option><option>Contract</option>
-          <option>Policy</option><option>Proposal</option><option>Addendum</option>
-        </datalist>
-      </div>
-      <div class="field">
-        <label>Review Date</label>
-        <input type="date" id="docReview" />
-      </div>
-      <div class="field">
-        <label>Expiry Date (triggers reminder)</label>
-        <input type="date" id="docExpiry" />
-        <div class="hint">Documents expiring within 30 days are flagged automatically.</div>
-      </div>
-      <div class="field">
-        <label>Attach Actual Document (optional)</label>
-        <input type="file" id="docFile" style="display:block;padding:8px;border:1px dashed var(--line);width:100%;background:#f8fafc;cursor:pointer" onchange="onFilePicked(event)" />
-        <div class="hint" id="fileHint">PDF, Word, image, etc. Stored in this browser. Max ~15 MB per file.</div>
-      </div>
-      <div class="field">
-        <label>Or Document Link (optional)</label>
-        <input id="docUrl" placeholder="https://sharepoint… or file link" />
-      </div>
-      <div class="field">
-        <label>Notes (optional)</label>
-        <textarea id="docNotes" placeholder="Any additional notes…"></textarea>
-      </div>
+  <!-- DOCUMENTS -->
+  <div class="panel active" id="panel-docs">
+    <div class="toolbar">
+      <select id="filterEntity" onchange="renderDocs()">
+        <option value="">All Folders / Entities</option>
+      </select>
+      <select id="filterStatus" onchange="renderDocs()">
+        <option value="">All Statuses</option>
+        <option value="expired">Expired</option>
+        <option value="soon">Expiring ≤ 30 days</option>
+        <option value="valid">Valid</option>
+      </select>
+      <input id="searchDocs" placeholder="Search documents…" oninput="renderDocs()" style="min-width:220px">
+      <div class="grow"></div>
+      <button class="btn navy" onclick="openDoc()">＋ Add Document</button>
     </div>
-    <div class="modal-foot">
-      <button class="btn-outline" onclick="closeDocModal()">Cancel</button>
-      <button class="btn-gold" onclick="saveDoc()">Save Document</button>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>Document</th><th>Entity</th><th>Review</th><th>Expiry</th><th>Status</th><th>Owner</th><th>File</th><th style="text-align:right">Actions</th>
+        </tr></thead>
+        <tbody id="docBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CONTACTS -->
+  <div class="panel" id="panel-contacts">
+    <div class="toolbar">
+      <div class="grow"></div>
+      <button class="btn navy" onclick="openContact()">＋ Add Contact</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>Name</th><th>Role</th><th>Email</th><th>Entity / Folder</th><th style="text-align:right">Actions</th>
+        </tr></thead>
+        <tbody id="contactBody"></tbody>
+      </table>
     </div>
   </div>
 </div>
 
-<!-- Folder Modal -->
-<div class="overlay" id="folderOverlay">
-  <div class="modal" style="max-width:420px">
-    <header style="padding:16px 20px"><h3 id="folderModalTitle">Add Folder</h3></header>
-    <div class="body">
-      <input type="hidden" id="folderOldName" />
-      <div class="field">
-        <label>Folder / Entity Name</label>
-        <input id="folderName" placeholder="e.g. 4Sight Africa (Pty) Ltd" />
+<!-- DOCUMENT MODAL -->
+<div class="overlay" id="docOverlay">
+  <div class="modal">
+    <div class="mhead"><h3 id="docModalTitle">Add Document</h3><button class="close" onclick="closeDoc()">×</button></div>
+    <div class="mbody">
+      <input type="hidden" id="docId">
+      <div class="fld"><label>Folder / Entity</label><select id="f_entity"></select></div>
+      <div class="fld"><label>Document Name</label><input id="f_name" placeholder="e.g. B-BBEE Certificate"></div>
+      <div class="fld"><label>Document Type</label><input id="f_type" placeholder="e.g. Certificate"></div>
+      <div class="fld"><label>Review Date</label><input type="date" id="f_review"></div>
+      <div class="fld"><label>Expiry Date (triggers reminder)</label><input type="date" id="f_expiry">
+        <div class="hint">Documents expiring within 30 days are flagged automatically.</div></div>
+      <div class="fld"><label>Owner</label><select id="f_owner"></select>
+        <div class="hint">Owner receives the reminder email. Manage people under Contacts / Owners.</div></div>
+      <div class="fld"><label>Upload File</label>
+        <div class="filebox" onclick="document.getElementById('f_file').click()">
+          <div>📎 Click to attach the actual document</div>
+          <div class="fn" id="f_fileName">No file attached</div>
+        </div>
+        <input type="file" id="f_file" style="display:none" onchange="handleFile(this)">
+      </div>
+      <div class="fld"><label>Document Link (optional)</label><input id="f_link" placeholder="https://sharepoint… or file link"></div>
+      <div class="fld"><label>Notes (optional)</label><textarea id="f_notes" rows="2" placeholder="Any additional notes…"></textarea></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn ghost" onclick="closeDoc()">Cancel</button>
+      <button class="btn gold" onclick="saveDoc()">Save Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="overlay" id="contactOverlay">
+  <div class="modal">
+    <div class="mhead"><h3 id="contactModalTitle">Add Contact</h3><button class="close" onclick="closeContact()">×</button></div>
+    <div class="mbody">
+      <input type="hidden" id="contactId">
+      <div class="fld"><label>Full Name</label><input id="c_name" placeholder="e.g. Zena Morgan"></div>
+      <div class="fld"><label>Role</label><input id="c_role" placeholder="e.g. Company Secretary"></div>
+      <div class="fld"><label>Email</label><input id="c_email" type="email" placeholder="name@4sight.cloud"></div>
+      <div class="fld"><label>Entity / Folder</label><select id="c_entity"></select></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn ghost" onclick="closeContact()">Cancel</button>
+      <button class="btn gold" onclick="saveContact()">Save Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOKEN SETTINGS MODAL -->
+<div class="overlay" id="tokenOverlay">
+  <div class="modal">
+    <div class="mhead"><h3>🔑 Connection Settings</h3><button class="close" onclick="closeToken()">×</button></div>
+    <div class="mbody">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+        <span id="tokenBigDot" class="statusdot red" style="cursor:default"></span>
+        <div><b id="tokenStatusLabel">Disconnected</b>
+        <div class="ent" id="tokenStatusSub">No token saved yet.</div></div>
+      </div>
+      <div class="fld"><label>GitHub Personal Access Token (classic)</label>
+        <input id="t_token" type="password" placeholder="ghp_… (stored only in this browser)">
+        <div class="hint">🔒 Stored locally in your browser only. Used solely to verify the connection against GitHub's API.</div>
+      </div>
+      <div class="fld"><label>Legend</label>
+        <div class="ent" style="line-height:1.9">
+          <span class="badge green">●</span> Green — token verified &amp; connected<br>
+          <span class="badge amber">●</span> Yellow — token saved, not yet verified<br>
+          <span class="badge red">●</span> Red — no token / disconnected
+        </div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn-outline" onclick="closeFolderModal()">Cancel</button>
-      <button class="btn-gold" onclick="saveFolder()">Save Folder</button>
+    <div class="mfoot">
+      <button class="btn danger" onclick="clearToken()">Remove Token</button>
+      <div class="grow"></div>
+      <button class="btn ghost" onclick="saveTokenOnly()">Save</button>
+      <button class="btn gold" onclick="testToken()">Save &amp; Test ▸</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL DRAFT MODAL -->
+<div class="overlay" id="mailOverlay">
+  <div class="modal">
+    <div class="mhead"><h3>📧 Expiry Reminder – Draft Email</h3><button class="close" onclick="closeMail()">×</button></div>
+    <div class="mbody maildraft">
+      <div class="line"><span>To:</span> <strong id="m_to"></strong></div>
+      <div class="line"><span>Subject:</span> <strong id="m_subject"></strong></div>
+      <label style="display:block;margin-top:14px">Message</label>
+      <textarea id="m_body"></textarea>
+    </div>
+    <div class="mfoot">
+      <button class="btn ghost" onclick="copyMail()">Copy Text</button>
+      <button class="btn navy" onclick="closeMail()">Close</button>
+      <button class="btn gold" onclick="sendMail()">Send ▸</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ============ DATA LAYER (localStorage) ============ */
-const STORE_KEY = "4sight_legal_hub_v1";
+const ENTITIES = [
+  "4Sight Africa (Pty) Ltd",
+  "4Sight OT Automation (Pty) Ltd",
+  "4Sight OT Optimisation (Pty) Ltd",
+  "4Sight OT Simulation (Pty) Ltd",
+  "4Sight Systems (Pty) Ltd",
+  "Dynamics Africa Services (Pty) Ltd",
+  "Namibia"
+];
+const REMINDER_DAYS = 30;
 
-const SEED = {
-  folders: [
-    "4Sight Africa (Pty) Ltd",
-    "4Sight OT Automation (Pty) Ltd",
-    "4Sight OT Optimisation (Pty) Ltd",
-    "4Sight OT Simulation (Pty) Ltd",
-    "4Sight Systems (Pty) Ltd",
-    "Dynamics Africa Services (Pty) Ltd",
-    "Namibia"
-  ],
-  docs: []
-};
+let docs = JSON.parse(localStorage.getItem('lh_docs') || '[]');
+let contacts = JSON.parse(localStorage.getItem('lh_contacts') || '[]');
+let currentMail = "";
 
-let db = load();
-let currentFolder = "__ALL__";
-let pendingFile = undefined; // holds {name,type,dataUrl} when a new file is picked
+function save(){ localStorage.setItem('lh_docs', JSON.stringify(docs)); localStorage.setItem('lh_contacts', JSON.stringify(contacts)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-/* ============ FILE STORE (IndexedDB) ============ */
-let _idb;
-function idb(){
-  if(_idb) return Promise.resolve(_idb);
-  return new Promise((res,rej)=>{
-    const req = indexedDB.open("4sight_legal_files",1);
-    req.onupgradeneeded = e => e.target.result.createObjectStore("files");
-    req.onsuccess = e => { _idb=e.target.result; res(_idb); };
-    req.onerror = e => rej(e);
+// ---- date / status ----
+function daysUntil(d){ if(!d) return null; const t=new Date(); t.setHours(0,0,0,0); const e=new Date(d); e.setHours(0,0,0,0); return Math.round((e-t)/86400000); }
+function statusOf(doc){
+  const du = daysUntil(doc.expiry);
+  if(du===null) return {key:'none',label:'No expiry',cls:'grey'};
+  if(du<0) return {key:'expired',label:'Expired '+Math.abs(du)+'d ago',cls:'red'};
+  if(du<=REMINDER_DAYS) return {key:'soon',label:'Expires in '+du+'d',cls:'amber'};
+  return {key:'valid',label:'Valid',cls:'green'};
+}
+function fmtDate(d){ if(!d) return '—'; const x=new Date(d); return x.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+
+function ownerOf(doc){ return contacts.find(c=>c.id===doc.ownerId) || null; }
+
+// ---- populate selects ----
+function fillEntitySelects(){
+  const opts = ENTITIES.map(e=>`<option>${esc(e)}</option>`).join('');
+  document.getElementById('f_entity').innerHTML = opts;
+  document.getElementById('c_entity').innerHTML = `<option value="">— Any / All —</option>`+opts;
+  document.getElementById('filterEntity').innerHTML = `<option value="">All Folders / Entities</option>`+opts;
+}
+function fillOwnerSelect(sel){
+  const el=document.getElementById('f_owner');
+  el.innerHTML = `<option value="">— Select owner —</option>` +
+    contacts.map(c=>`<option value="${c.id}">${esc(c.name)}${c.role?' · '+esc(c.role):''}</option>`).join('');
+  if(sel) el.value=sel;
+}
+
+// ---- tabs ----
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+}
+
+// ---- render docs ----
+function renderDocs(){
+  const fe=document.getElementById('filterEntity').value;
+  const fs=document.getElementById('filterStatus').value;
+  const q=(document.getElementById('searchDocs').value||'').toLowerCase();
+  let list=docs.filter(d=>{
+    if(fe && d.entity!==fe) return false;
+    if(q && !((d.name||'')+ (d.type||'')).toLowerCase().includes(q)) return false;
+    if(fs){ const s=statusOf(d).key; if(fs==='soon'&&s!=='soon')return false; if(fs==='expired'&&s!=='expired')return false; if(fs==='valid'&&s!=='valid')return false; }
+    return true;
   });
-}
-async function saveFile(id,fileObj){ const d=await idb(); return new Promise((res,rej)=>{const t=d.transaction("files","readwrite");t.objectStore("files").put(fileObj,id);t.oncomplete=res;t.onerror=rej;}); }
-async function getFile(id){ const d=await idb(); return new Promise((res)=>{const t=d.transaction("files","readonly");const r=t.objectStore("files").get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);}); }
-async function delFile(id){ const d=await idb(); return new Promise((res)=>{const t=d.transaction("files","readwrite");t.objectStore("files").delete(id);t.oncomplete=res;t.onerror=res;}); }
-
-function onFilePicked(ev){
-  const f = ev.target.files[0];
-  if(!f){ pendingFile=undefined; return; }
-  if(f.size > 15*1024*1024){ alert("File is larger than 15 MB. Please use the Document Link field instead for very large files."); ev.target.value=""; pendingFile=undefined; return; }
-  const r = new FileReader();
-  r.onload = e => { pendingFile = {name:f.name, type:f.type, dataUrl:e.target.result}; document.getElementById('fileHint').textContent = "✔ Attached: "+f.name; };
-  r.readAsDataURL(f);
-}
-async function openStoredFile(id){
-  const f = await getFile(id);
-  if(!f){ alert("File not found in this browser."); return; }
-  const a=document.createElement('a'); a.href=f.dataUrl; a.download=f.name; a.click();
-}
-
-function load(){
-  try{
-    const raw = localStorage.getItem(STORE_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){}
-  return JSON.parse(JSON.stringify(SEED));
-}
-function save(){
-  localStorage.setItem(STORE_KEY, JSON.stringify(db));
-}
-
-/* ============ HELPERS ============ */
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
-function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
-function daysUntil(dateStr){
-  if(!dateStr) return null;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const d = new Date(dateStr); d.setHours(0,0,0,0);
-  return Math.round((d - today)/86400000);
-}
-function expiryPill(dateStr){
-  const d = daysUntil(dateStr);
-  if(d===null) return '<span class="pill none">—</span>';
-  const label = new Date(dateStr).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-  if(d<0) return `<span class="pill exp">Expired · ${label}</span>`;
-  if(d<=30) return `<span class="pill warn">${d}d · ${label}</span>`;
-  return `<span class="pill ok">${label}</span>`;
-}
-function fmtDate(s){ return s ? new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'; }
-
-/* ============ RENDER ============ */
-function render(){
-  renderFolders();
-  renderStats();
-  renderTable();
-}
-
-function renderFolders(){
-  const el = document.getElementById('folderList');
-  let html = folderRow("__ALL__","📁 All Documents", db.docs.length);
-  db.folders.forEach(f=>{
-    const n = db.docs.filter(d=>d.folder===f).length;
-    html += folderRow(f, "🗂 "+f, n);
-  });
-  el.innerHTML = html;
-}
-function folderRow(key,label,count){
-  const active = currentFolder===key ? " active":"";
-  return `<div class="folder${active}" onclick="selectFolder('${encodeURIComponent(key)}')">
-    <span class="fname">${esc(label)}</span>
-    <span class="count">${count}</span>
-  </div>`;
-}
-function selectFolder(k){ currentFolder = decodeURIComponent(k); document.getElementById('searchBox').value=''; render(); }
-
-function renderStats(){
-  const docs = db.docs;
-  let expired=0, soon=0;
-  docs.forEach(d=>{
-    const du = daysUntil(d.expiry);
-    if(du!==null){ if(du<0) expired++; else if(du<=30) soon++; }
-  });
-  document.getElementById('stats').innerHTML = `
-    <div class="stat"><div class="num">${db.folders.length}</div><div class="lbl">Entities / Folders</div></div>
-    <div class="stat"><div class="num">${docs.length}</div><div class="lbl">Total Documents</div></div>
-    <div class="stat soon"><div class="num">${soon}</div><div class="lbl">Expiring ≤ 30 days</div></div>
-    <div class="stat exp"><div class="num">${expired}</div><div class="lbl">Expired</div></div>`;
-}
-
-function renderTable(){
-  const name = currentFolder==="__ALL__" ? "All Documents" : currentFolder;
-  document.getElementById('currentFolderName').textContent = name;
-
-  // folder tools (rename / delete) only when a specific folder is selected
-  const tools = document.getElementById('folderTools');
-  if(currentFolder==="__ALL__"){ tools.innerHTML=""; }
-  else{
-    tools.innerHTML = `<button class="btn-outline btn-sm" onclick="openFolderModal('${encodeURIComponent(currentFolder)}')">✎ Rename</button>
-      <button class="btn-danger btn-sm" onclick="deleteFolder('${encodeURIComponent(currentFolder)}')">🗑 Delete Folder</button>`;
-  }
-
-  const q = (document.getElementById('searchBox').value||"").toLowerCase();
-  let rows = db.docs.filter(d=> currentFolder==="__ALL__" || d.folder===currentFolder);
-  if(q) rows = rows.filter(d=> (d.name+" "+d.type+" "+d.notes+" "+d.folder).toLowerCase().includes(q));
-
-  // sort: expired first, then soonest expiry
-  rows.sort((a,b)=>{
-    const da=daysUntil(a.expiry), db_=daysUntil(b.expiry);
-    if(da===null&&db_===null) return a.name.localeCompare(b.name);
-    if(da===null) return 1; if(db_===null) return -1;
-    return da-db_;
-  });
-
-  const wrap = document.getElementById('tableWrap');
-  if(rows.length===0){
-    wrap.innerHTML = `<div class="empty">No documents here yet.<br><br>
-      <button class="btn-gold" onclick="openDocModal()">＋ Add your first document</button></div>`;
-    return;
-  }
-  let html = `<table><thead><tr>
-    <th>Document</th><th>Type</th>${currentFolder==="__ALL__"?"<th>Folder</th>":""}
-    <th>Review</th><th>Expiry / Reminder</th><th></th></tr></thead><tbody>`;
-  rows.forEach(d=>{
-    const nameCell = d.url ? `<a class="doclink" href="${esc(d.url)}" target="_blank">${esc(d.name)}</a>` : esc(d.name);
-    const fileCell = d.fileName ? `<div class="hint">📎 <a class="doclink" href="javascript:void(0)" onclick="openStoredFile('${d.id}')">${esc(d.fileName)}</a></div>` : "";
-    html += `<tr>
-      <td>${nameCell}${fileCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td>
-      <td>${esc(d.type)||'—'}</td>
-      ${currentFolder==="__ALL__"?`<td>${esc(d.folder)}</td>`:""}
+  list.sort((a,b)=>{ const da=daysUntil(a.expiry), db=daysUntil(b.expiry); if(da===null)return 1; if(db===null)return -1; return da-db; });
+  const body=document.getElementById('docBody');
+  if(!list.length){ body.innerHTML=`<tr><td colspan="8" class="empty">No documents yet. Click <b>Add Document</b> to get started.</td></tr>`; }
+  else body.innerHTML=list.map(d=>{
+    const st=statusOf(d); const o=ownerOf(d);
+    const flagged=(st.key==='soon'||st.key==='expired');
+    const fileCell = d.fileData ? `<a class="filelink" href="${d.fileData}" download="${esc(d.fileName)}">⬇ ${esc(d.fileName.length>16?d.fileName.slice(0,15)+'…':d.fileName)}</a>`
+                     : (d.link? `<a class="filelink" href="${esc(d.link)}" target="_blank">🔗 Link</a>` : `<span class="nofile">—</span>`);
+    const ownerCell = o ? `<div class="owner-cell">${esc(o.name)}<div class="om">${esc(o.email||'')}</div></div>` : `<span class="nofile">Unassigned</span>`;
+    const draftBtn = flagged ? `<button class="btn gold sm" onclick="draftMail('${d.id}')">📧 Draft Email</button>` : '';
+    return `<tr>
+      <td><b>${esc(d.name)}</b><div class="ent">${esc(d.type||'')}</div></td>
+      <td class="ent">${esc(d.entity)}</td>
       <td>${fmtDate(d.review)}</td>
-      <td>${expiryPill(d.expiry)}</td>
+      <td>${fmtDate(d.expiry)}</td>
+      <td><span class="badge ${st.cls}">${st.label}</span></td>
+      <td>${ownerCell}</td>
+      <td>${fileCell}</td>
       <td><div class="row-actions">
-        <button class="btn-outline btn-sm" onclick="openDocModal('${d.id}')">✎</button>
-        <button class="btn-danger btn-sm" onclick="deleteDoc('${d.id}')">🗑</button>
-      </div></td></tr>`;
-  });
-  html += `</tbody></table>`;
-  wrap.innerHTML = html;
+        ${draftBtn}
+        <button class="btn ghost sm" onclick="openDoc('${d.id}')">Edit</button>
+        <button class="btn danger sm" onclick="delDoc('${d.id}')">Del</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  updateStats();
+}
+function updateStats(){
+  let soon=0,exp=0,ok=0;
+  docs.forEach(d=>{const k=statusOf(d).key; if(k==='soon')soon++; else if(k==='expired')exp++; else if(k==='valid')ok++;});
+  document.getElementById('s-total').textContent=docs.length;
+  document.getElementById('s-soon').textContent=soon;
+  document.getElementById('s-exp').textContent=exp;
+  document.getElementById('s-ok').textContent=ok;
 }
 
-/* ============ DOCUMENT CRUD ============ */
-function openDocModal(id){
-  const sel = document.getElementById('docFolder');
-  sel.innerHTML = db.folders.map(f=>`<option>${esc(f)}</option>`).join('');
+// ---- doc modal ----
+function openDoc(id){
+  fillEntitySelects(); fillOwnerSelect();
+  document.getElementById('f_file').value='';
   if(id){
-    const d = db.docs.find(x=>x.id===id);
-    document.getElementById('docModalTitle').textContent="Edit Document";
+    const d=docs.find(x=>x.id===id);
+    document.getElementById('docModalTitle').textContent='Edit Document';
     document.getElementById('docId').value=d.id;
-    sel.value=d.folder;
-    document.getElementById('docName').value=d.name;
-    document.getElementById('docType').value=d.type||'';
-    document.getElementById('docReview').value=d.review||'';
-    document.getElementById('docExpiry').value=d.expiry||'';
-    document.getElementById('docUrl').value=d.url||'';
-    document.getElementById('docNotes').value=d.notes||'';
-  }else{
-    document.getElementById('docModalTitle').textContent="Add Document";
-    ['docId','docName','docType','docReview','docExpiry','docUrl','docNotes'].forEach(i=>document.getElementById(i).value='');
-    if(currentFolder!=="__ALL__") sel.value=currentFolder;
+    document.getElementById('f_entity').value=d.entity;
+    document.getElementById('f_name').value=d.name||'';
+    document.getElementById('f_type').value=d.type||'';
+    document.getElementById('f_review').value=d.review||'';
+    document.getElementById('f_expiry').value=d.expiry||'';
+    fillOwnerSelect(d.ownerId||'');
+    document.getElementById('f_link').value=d.link||'';
+    document.getElementById('f_notes').value=d.notes||'';
+    document.getElementById('f_fileName').textContent=d.fileName||'No file attached';
+    tempFile = d.fileData ? {name:d.fileName,data:d.fileData} : null;
+  } else {
+    document.getElementById('docModalTitle').textContent='Add Document';
+    ['docId','f_name','f_type','f_review','f_expiry','f_link','f_notes'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('f_fileName').textContent='No file attached';
+    tempFile=null;
   }
-  pendingFile=undefined;
-  document.getElementById('docFile').value="";
-  const existing = id ? db.docs.find(x=>x.id===id) : null;
-  document.getElementById('fileHint').textContent = (existing&&existing.fileName)
-    ? "✔ Currently attached: "+existing.fileName+" (choose a new file to replace)"
-    : "PDF, Word, image, etc. Stored in this browser. Max ~15 MB per file.";
   document.getElementById('docOverlay').classList.add('show');
 }
-function closeDocModal(){ document.getElementById('docOverlay').classList.remove('show'); }
-async function saveDoc(){
-  const name=document.getElementById('docName').value.trim();
-  if(!name){ alert("Please enter a document name."); return; }
-  const existing = db.docs.find(x=>x.id===document.getElementById('docId').value);
-  const rec={
-    id:document.getElementById('docId').value||uid(),
-    folder:document.getElementById('docFolder').value,
-    name, type:document.getElementById('docType').value.trim(),
-    review:document.getElementById('docReview').value,
-    expiry:document.getElementById('docExpiry').value,
-    url:document.getElementById('docUrl').value.trim(),
-    notes:document.getElementById('docNotes').value.trim(),
-    fileName: (existing&&existing.fileName)||""
-  };
-  if(pendingFile){
-    await saveFile(rec.id, pendingFile);
-    rec.fileName = pendingFile.name;
-  }
-  const i=db.docs.findIndex(x=>x.id===rec.id);
-  if(i>=0) db.docs[i]=rec; else db.docs.push(rec);
-  save(); closeDocModal(); render();
-}
-async function deleteDoc(id){
-  if(!confirm("Delete this document?")) return;
-  await delFile(id);
-  db.docs=db.docs.filter(x=>x.id!==id); save(); render();
-}
-
-/* ============ FOLDER CRUD ============ */
-function openFolderModal(enc){
-  const old = enc?decodeURIComponent(enc):"";
-  document.getElementById('folderModalTitle').textContent = old?"Rename Folder":"Add Folder";
-  document.getElementById('folderOldName').value=old;
-  document.getElementById('folderName').value=old;
-  document.getElementById('folderOverlay').classList.add('show');
-}
-function closeFolderModal(){ document.getElementById('folderOverlay').classList.remove('show'); }
-function saveFolder(){
-  const name=document.getElementById('folderName').value.trim();
-  const old=document.getElementById('folderOldName').value;
-  if(!name){ alert("Please enter a folder name."); return; }
-  if(old){
-    if(name!==old && db.folders.includes(name)){ alert("A folder with that name already exists."); return; }
-    const idx=db.folders.indexOf(old);
-    db.folders[idx]=name;
-    db.docs.forEach(d=>{ if(d.folder===old) d.folder=name; });
-    if(currentFolder===old) currentFolder=name;
-  }else{
-    if(db.folders.includes(name)){ alert("A folder with that name already exists."); return; }
-    db.folders.push(name);
-  }
-  save(); closeFolderModal(); render();
-}
-function deleteFolder(enc){
-  const f=decodeURIComponent(enc);
-  const n=db.docs.filter(d=>d.folder===f).length;
-  if(!confirm(`Delete folder "${f}"?`+(n?`\n\nThis will also delete ${n} document(s) inside it.`:""))) return;
-  db.folders=db.folders.filter(x=>x!==f);
-  db.docs=db.docs.filter(d=>d.folder!==f);
-  if(currentFolder===f) currentFolder="__ALL__";
-  save(); render();
-}
-
-/* ============ EXPORT / IMPORT ============ */
-function exportData(){
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download="data.json";
-  a.click();
-}
-function importData(ev){
-  const file=ev.target.files[0]; if(!file) return;
+function closeDoc(){ document.getElementById('docOverlay').classList.remove('show'); }
+let tempFile=null;
+function handleFile(input){
+  const f=input.files[0]; if(!f) return;
+  if(f.size>4*1024*1024){ alert('File is larger than 4MB — please attach a link instead for very large files.'); input.value=''; return; }
   const r=new FileReader();
-  r.onload=e=>{
-    try{
-      const obj=JSON.parse(e.target.result);
-      if(!obj.folders||!obj.docs) throw new Error("bad file");
-      if(!confirm("Import will replace current data. Continue?")) return;
-      db=obj; currentFolder="__ALL__"; save(); render();
-      alert("Imported successfully.");
-    }catch(err){ alert("Could not import: invalid data file."); }
+  r.onload=()=>{ tempFile={name:f.name,data:r.result}; document.getElementById('f_fileName').textContent=f.name; };
+  r.readAsDataURL(f);
+}
+function saveDoc(){
+  const name=document.getElementById('f_name').value.trim();
+  if(!name){ alert('Please enter a document name.'); return; }
+  const id=document.getElementById('docId').value;
+  const obj={
+    id: id||uid(),
+    entity:document.getElementById('f_entity').value,
+    name, type:document.getElementById('f_type').value.trim(),
+    review:document.getElementById('f_review').value,
+    expiry:document.getElementById('f_expiry').value,
+    ownerId:document.getElementById('f_owner').value,
+    link:document.getElementById('f_link').value.trim(),
+    notes:document.getElementById('f_notes').value.trim(),
+    fileName: tempFile?tempFile.name:'', fileData: tempFile?tempFile.data:''
   };
-  r.readAsText(file);
-  ev.target.value="";
+  if(id){ docs=docs.map(d=>d.id===id?obj:d); } else docs.push(obj);
+  save(); closeDoc(); renderDocs();
+}
+function delDoc(id){ if(confirm('Delete this document?')){ docs=docs.filter(d=>d.id!==id); save(); renderDocs(); } }
+
+// ---- contacts ----
+function renderContacts(){
+  const body=document.getElementById('contactBody');
+  if(!contacts.length){ body.innerHTML=`<tr><td colspan="5" class="empty">No contacts yet. Add owners so reminder emails know where to go.</td></tr>`; return; }
+  body.innerHTML=contacts.map(c=>`<tr>
+    <td><b>${esc(c.name)}</b></td>
+    <td class="ent">${esc(c.role||'')}</td>
+    <td><a class="filelink" href="mailto:${esc(c.email)}">${esc(c.email||'')}</a></td>
+    <td class="ent">${esc(c.entity||'Any / All')}</td>
+    <td><div class="row-actions">
+      <button class="btn ghost sm" onclick="openContact('${c.id}')">Edit</button>
+      <button class="btn danger sm" onclick="delContact('${c.id}')">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+function openContact(id){
+  fillEntitySelects();
+  if(id){
+    const c=contacts.find(x=>x.id===id);
+    document.getElementById('contactModalTitle').textContent='Edit Contact';
+    document.getElementById('contactId').value=c.id;
+    document.getElementById('c_name').value=c.name||'';
+    document.getElementById('c_role').value=c.role||'';
+    document.getElementById('c_email').value=c.email||'';
+    document.getElementById('c_entity').value=c.entity||'';
+  } else {
+    document.getElementById('contactModalTitle').textContent='Add Contact';
+    ['contactId','c_name','c_role','c_email'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('c_entity').value='';
+  }
+  document.getElementById('contactOverlay').classList.add('show');
+}
+function closeContact(){ document.getElementById('contactOverlay').classList.remove('show'); }
+function saveContact(){
+  const name=document.getElementById('c_name').value.trim();
+  const email=document.getElementById('c_email').value.trim();
+  if(!name||!email){ alert('Name and email are required.'); return; }
+  const id=document.getElementById('contactId').value;
+  const obj={ id:id||uid(), name, role:document.getElementById('c_role').value.trim(), email, entity:document.getElementById('c_entity').value };
+  if(id){ contacts=contacts.map(c=>c.id===id?obj:c); } else contacts.push(obj);
+  save(); closeContact(); renderContacts(); renderDocs();
+}
+function delContact(id){ if(confirm('Delete this contact?')){ contacts=contacts.filter(c=>c.id!==id); save(); renderContacts(); renderDocs(); } }
+
+// ---- email draft ----
+function draftMail(docId){
+  const d=docs.find(x=>x.id===docId); if(!d) return;
+  const o=ownerOf(d);
+  const st=statusOf(d);
+  const du=daysUntil(d.expiry);
+  const to = o? o.email : '';
+  const ownerFirst = o? o.name.split(' ')[0] : 'there';
+  const state = du<0 ? `has expired (${Math.abs(du)} day(s) ago)` : `is due to expire in ${du} day(s)`;
+  const subject = `Action Required: ${d.name} (${d.entity}) ${du<0?'has expired':'expiring '+fmtDate(d.expiry)}`;
+  const body =
+`Hi ${ownerFirst},
+
+This is a reminder that the following legal document ${state} and needs attention:
+
+  • Document:   ${d.name}
+  • Type:       ${d.type||'—'}
+  • Entity:     ${d.entity}
+  • Expiry:     ${fmtDate(d.expiry)}
+  • Review:     ${fmtDate(d.review)}${d.link?`\n  • Link:       ${d.link}`:''}${d.notes?`\n  • Notes:      ${d.notes}`:''}
+
+Please arrange for the document to be renewed / updated and the new copy uploaded to the Legal Documents Hub.
+
+Kind regards,
+Zena Morgan
+Group Manager: Sales Enablement | 4Sight`;
+  document.getElementById('m_to').textContent = to || '⚠ No owner email — assign an owner under Contacts';
+  document.getElementById('m_subject').textContent = subject;
+  document.getElementById('m_body').value = body;
+  currentMail = {to, subject};
+  document.getElementById('mailOverlay').classList.add('show');
+}
+function closeMail(){ document.getElementById('mailOverlay').classList.remove('show'); }
+function sendMail(){
+  const body=document.getElementById('m_body').value;
+  const url=`mailto:${encodeURIComponent(currentMail.to||'')}?subject=${encodeURIComponent(currentMail.subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href=url;
+}
+function copyMail(){
+  const t=`To: ${currentMail.to}\nSubject: ${currentMail.subject}\n\n${document.getElementById('m_body').value}`;
+  navigator.clipboard.writeText(t).then(()=>alert('Draft copied to clipboard.'));
 }
 
-/* auto-load data.json shipped in the repo on first ever visit */
-(async function boot(){
-  const firstTime = !localStorage.getItem(STORE_KEY);
-  if(firstTime){
-    try{
-      const res=await fetch('data.json',{cache:'no-store'});
-      if(res.ok){ const obj=await res.json(); if(obj.folders&&obj.docs){ db=obj; save(); } }
-    }catch(e){/* no data.json shipped — use seed */}
-  }
-  render();
-})();
+// ---- token / connection status ----
+// state: 'red' (no token) | 'yellow' (saved, unverified) | 'green' (verified)
+function setDot(state){
+  const titles={green:'Token: connected ✓ — click for settings',yellow:'Token: saved, not verified — click for settings',red:'Token: disconnected — click for settings'};
+  const dot=document.getElementById('statusDot');
+  dot.className='statusdot '+state; dot.title=titles[state];
+  const big=document.getElementById('tokenBigDot'); if(big) big.className='statusdot '+state;
+  const lbl={green:['Connected','Token verified against GitHub.'],yellow:['Saved (not verified)','Token stored — click “Save & Test” to verify.'],red:['Disconnected','No token saved yet.']};
+  const L=document.getElementById('tokenStatusLabel'), S=document.getElementById('tokenStatusSub');
+  if(L){L.textContent=lbl[state][0]; S.textContent=lbl[state][1];}
+  localStorage.setItem('lh_tokenState', state);
+}
+function initDot(){
+  const tok=localStorage.getItem('lh_token');
+  const st=localStorage.getItem('lh_tokenState');
+  setDot(tok ? (st==='green'?'green':'yellow') : 'red');
+}
+function openToken(){
+  document.getElementById('t_token').value = localStorage.getItem('lh_token')||'';
+  initDot();
+  document.getElementById('tokenOverlay').classList.add('show');
+}
+function closeToken(){ document.getElementById('tokenOverlay').classList.remove('show'); }
+function saveTokenOnly(){
+  const t=document.getElementById('t_token').value.trim();
+  if(!t){ setDot('red'); localStorage.removeItem('lh_token'); return; }
+  localStorage.setItem('lh_token',t); setDot('yellow');
+}
+function clearToken(){
+  localStorage.removeItem('lh_token'); localStorage.removeItem('lh_tokenState');
+  document.getElementById('t_token').value=''; setDot('red');
+}
+async function testToken(){
+  const t=document.getElementById('t_token').value.trim();
+  if(!t){ clearToken(); return; }
+  localStorage.setItem('lh_token',t); setDot('yellow');
+  document.getElementById('tokenStatusSub').textContent='Verifying…';
+  try{
+    const r=await fetch('https://api.github.com/user',{headers:{Authorization:'token '+t,Accept:'application/vnd.github+json'}});
+    if(r.ok){ const u=await r.json(); setDot('green'); document.getElementById('tokenStatusSub').textContent='Connected as '+(u.login||'user')+'.'; }
+    else { setDot('yellow'); document.getElementById('tokenStatusSub').textContent='GitHub rejected the token ('+r.status+'). Check scopes/expiry.'; }
+  }catch(e){ setDot('yellow'); document.getElementById('tokenStatusSub').textContent='Could not reach GitHub (offline or blocked). Token saved.'; }
+}
+
+// close on overlay click
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('show'); }));
+
+// ---- seed demo owner + doc if empty (first run only) ----
+if(!contacts.length && !docs.length){
+  contacts=[{id:uid(),name:'Zena Morgan',role:'Group Manager: Sales Enablement',email:'zena.morgan@4sight.cloud',entity:''}];
+  save();
+}
+
+// init
+fillEntitySelects(); renderDocs(); renderContacts(); initDot();
 </script>
 </body>
 </html>
