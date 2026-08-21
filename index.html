@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>4Sight Legal Documents Hub</title>
+<style>
+  :root{
+    --navy:#0f2749;
+    --navy-2:#163a6b;
+    --gold:#c9a227;
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --line:#e2e8f0;
+    --text:#1e293b;
+    --muted:#64748b;
+    --danger:#dc2626;
+    --ok:#16a34a;
+    --warn:#d97706;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  header{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:18px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header .brand{display:flex;align-items:center;gap:12px}
+  header .logo{width:44px;height:44px;border-radius:8px;background:var(--gold);color:var(--navy);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:20px}
+  header h1{font-size:20px;margin:0;font-weight:700}
+  header p{margin:2px 0 0;font-size:12px;color:#cbd5e1}
+  header .spacer{flex:1}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  button{cursor:pointer;border:none;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:600;transition:.15s}
+  .btn-gold{background:var(--gold);color:var(--navy)}
+  .btn-gold:hover{filter:brightness(1.08)}
+  .btn-light{background:rgba(255,255,255,.14);color:#fff}
+  .btn-light:hover{background:rgba(255,255,255,.24)}
+  .btn-outline{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn-outline:hover{background:#f1f5f9}
+  .btn-danger{background:#fee2e2;color:var(--danger)}
+  .btn-danger:hover{background:#fecaca}
+  .btn-sm{padding:5px 10px;font-size:12px}
+  .layout{display:flex;min-height:calc(100vh - 82px)}
+  aside{width:290px;background:var(--card);border-right:1px solid var(--line);padding:16px;overflow-y:auto}
+  aside h2{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:0 0 10px}
+  .folder{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;font-size:14px}
+  .folder:hover{background:#f1f5f9}
+  .folder.active{background:var(--navy);color:#fff}
+  .folder .count{margin-left:auto;font-size:11px;background:#e2e8f0;color:var(--muted);border-radius:20px;padding:1px 8px}
+  .folder.active .count{background:var(--gold);color:var(--navy)}
+  .folder .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  main{flex:1;padding:22px 26px;overflow-y:auto}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:130px}
+  .stat .num{font-size:26px;font-weight:800;color:var(--navy)}
+  .stat .lbl{font-size:12px;color:var(--muted);margin-top:2px}
+  .stat.exp .num{color:var(--danger)}
+  .stat.soon .num{color:var(--warn)}
+  .panel-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .panel-head h2{margin:0;font-size:20px;color:var(--navy)}
+  .panel-head .spacer{flex:1}
+  .search{padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;min-width:220px}
+  table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  th{background:var(--navy);color:#fff;text-align:left;padding:11px 14px;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  td{padding:11px 14px;border-top:1px solid var(--line);font-size:13px;vertical-align:middle}
+  tr:hover td{background:#f8fafc}
+  .pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700}
+  .pill.ok{background:#dcfce7;color:var(--ok)}
+  .pill.warn{background:#fef3c7;color:var(--warn)}
+  .pill.exp{background:#fee2e2;color:var(--danger)}
+  .pill.none{background:#e2e8f0;color:var(--muted)}
+  .empty{padding:50px;text-align:center;color:var(--muted)}
+  .row-actions{display:flex;gap:6px}
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(15,39,73,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .overlay.show{display:flex}
+  .modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .modal header{background:var(--navy);border-radius:14px 14px 0 0}
+  .modal .body{padding:20px}
+  .modal h3{margin:0;font-size:17px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+  .field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit}
+  .field textarea{resize:vertical;min-height:60px}
+  .modal-foot{display:flex;gap:10px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--line)}
+  .hint{font-size:11px;color:var(--muted);margin-top:4px}
+  a.doclink{color:var(--navy-2);font-weight:600;text-decoration:none}
+  a.doclink:hover{text-decoration:underline}
+  .footnote{font-size:11px;color:var(--muted);text-align:center;padding:16px}
+  input[type=file]{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">4S</div>
+    <div>
+      <h1>Legal Documents Hub</h1>
+      <p>Central register of legal documents, agreements &amp; expiry reminders</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="toolbar">
+    <button class="btn-light" onclick="exportData()">⬇ Export (backup)</button>
+    <button class="btn-light" onclick="document.getElementById('importFile').click()">⬆ Import</button>
+    <input type="file" id="importFile" accept=".json" onchange="importData(event)" />
+    <button class="btn-gold" onclick="openDocModal()">＋ Add Document</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <h2>Entities / Folders</h2>
+    <div id="folderList"></div>
+    <button class="btn-outline btn-sm" style="width:100%;margin-top:10px" onclick="openFolderModal()">＋ Add Folder</button>
+  </aside>
+
+  <main>
+    <div class="stats" id="stats"></div>
+    <div class="panel-head">
+      <h2 id="currentFolderName">All Documents</h2>
+      <span id="folderTools"></span>
+      <div class="spacer"></div>
+      <input class="search" id="searchBox" placeholder="🔍 Search documents…" oninput="render()" />
+    </div>
+    <div id="tableWrap"></div>
+    <div class="footnote">Data is saved automatically in this browser. Use <b>Export</b> to back up or commit <code>data.json</code> to GitHub.</div>
+  </main>
+</div>
+
+<!-- Document Modal -->
+<div class="overlay" id="docOverlay">
+  <div class="modal">
+    <header style="padding:16px 20px"><h3 id="docModalTitle">Add Document</h3></header>
+    <div class="body">
+      <input type="hidden" id="docId" />
+      <div class="field">
+        <label>Folder / Entity</label>
+        <select id="docFolder"></select>
+      </div>
+      <div class="field">
+        <label>Document Name</label>
+        <input id="docName" placeholder="e.g. Company Registration Certificate" />
+      </div>
+      <div class="field">
+        <label>Document Type</label>
+        <input id="docType" placeholder="e.g. Certificate, Agreement, Registration" list="typeList" />
+        <datalist id="typeList">
+          <option>Agreement</option><option>Certificate</option><option>Registration</option>
+          <option>Corporate Profile</option><option>Licence</option><option>Contract</option>
+          <option>Policy</option><option>Proposal</option><option>Addendum</option>
+        </datalist>
+      </div>
+      <div class="field">
+        <label>Review Date</label>
+        <input type="date" id="docReview" />
+      </div>
+      <div class="field">
+        <label>Expiry Date (triggers reminder)</label>
+        <input type="date" id="docExpiry" />
+        <div class="hint">Documents expiring within 30 days are flagged automatically.</div>
+      </div>
+      <div class="field">
+        <label>Document Link (optional)</label>
+        <input id="docUrl" placeholder="https://sharepoint… or file link" />
+      </div>
+      <div class="field">
+        <label>Notes (optional)</label>
+        <textarea id="docNotes" placeholder="Any additional notes…"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeDocModal()">Cancel</button>
+      <button class="btn-gold" onclick="saveDoc()">Save Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- Folder Modal -->
+<div class="overlay" id="folderOverlay">
+  <div class="modal" style="max-width:420px">
+    <header style="padding:16px 20px"><h3 id="folderModalTitle">Add Folder</h3></header>
+    <div class="body">
+      <input type="hidden" id="folderOldName" />
+      <div class="field">
+        <label>Folder / Entity Name</label>
+        <input id="folderName" placeholder="e.g. 4Sight Africa (Pty) Ltd" />
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeFolderModal()">Cancel</button>
+      <button class="btn-gold" onclick="saveFolder()">Save Folder</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA LAYER (localStorage) ============ */
+const STORE_KEY = "4sight_legal_hub_v1";
+
+const SEED = {
+  folders: [
+    "4Sight Africa (Pty) Ltd",
+    "4Sight OT Automation (Pty) Ltd",
+    "4Sight OT Optimisation (Pty) Ltd",
+    "4Sight OT Simulation (Pty) Ltd",
+    "4Sight Systems (Pty) Ltd",
+    "Dynamics Africa Services (Pty) Ltd",
+    "Namibia"
+  ],
+  docs: []
+};
+
+let db = load();
+let currentFolder = "__ALL__";
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return JSON.parse(JSON.stringify(SEED));
+}
+function save(){
+  localStorage.setItem(STORE_KEY, JSON.stringify(db));
+}
+
+/* ============ HELPERS ============ */
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(dateStr); d.setHours(0,0,0,0);
+  return Math.round((d - today)/86400000);
+}
+function expiryPill(dateStr){
+  const d = daysUntil(dateStr);
+  if(d===null) return '<span class="pill none">—</span>';
+  const label = new Date(dateStr).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  if(d<0) return `<span class="pill exp">Expired · ${label}</span>`;
+  if(d<=30) return `<span class="pill warn">${d}d · ${label}</span>`;
+  return `<span class="pill ok">${label}</span>`;
+}
+function fmtDate(s){ return s ? new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'; }
+
+/* ============ RENDER ============ */
+function render(){
+  renderFolders();
+  renderStats();
+  renderTable();
+}
+
+function renderFolders(){
+  const el = document.getElementById('folderList');
+  let html = folderRow("__ALL__","📁 All Documents", db.docs.length);
+  db.folders.forEach(f=>{
+    const n = db.docs.filter(d=>d.folder===f).length;
+    html += folderRow(f, "🗂 "+f, n);
+  });
+  el.innerHTML = html;
+}
+function folderRow(key,label,count){
+  const active = currentFolder===key ? " active":"";
+  return `<div class="folder${active}" onclick="selectFolder('${encodeURIComponent(key)}')">
+    <span class="fname">${esc(label)}</span>
+    <span class="count">${count}</span>
+  </div>`;
+}
+function selectFolder(k){ currentFolder = decodeURIComponent(k); document.getElementById('searchBox').value=''; render(); }
+
+function renderStats(){
+  const docs = db.docs;
+  let expired=0, soon=0;
+  docs.forEach(d=>{
+    const du = daysUntil(d.expiry);
+    if(du!==null){ if(du<0) expired++; else if(du<=30) soon++; }
+  });
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="num">${db.folders.length}</div><div class="lbl">Entities / Folders</div></div>
+    <div class="stat"><div class="num">${docs.length}</div><div class="lbl">Total Documents</div></div>
+    <div class="stat soon"><div class="num">${soon}</div><div class="lbl">Expiring ≤ 30 days</div></div>
+    <div class="stat exp"><div class="num">${expired}</div><div class="lbl">Expired</div></div>`;
+}
+
+function renderTable(){
+  const name = currentFolder==="__ALL__" ? "All Documents" : currentFolder;
+  document.getElementById('currentFolderName').textContent = name;
+
+  // folder tools (rename / delete) only when a specific folder is selected
+  const tools = document.getElementById('folderTools');
+  if(currentFolder==="__ALL__"){ tools.innerHTML=""; }
+  else{
+    tools.innerHTML = `<button class="btn-outline btn-sm" onclick="openFolderModal('${encodeURIComponent(currentFolder)}')">✎ Rename</button>
+      <button class="btn-danger btn-sm" onclick="deleteFolder('${encodeURIComponent(currentFolder)}')">🗑 Delete Folder</button>`;
+  }
+
+  const q = (document.getElementById('searchBox').value||"").toLowerCase();
+  let rows = db.docs.filter(d=> currentFolder==="__ALL__" || d.folder===currentFolder);
+  if(q) rows = rows.filter(d=> (d.name+" "+d.type+" "+d.notes+" "+d.folder).toLowerCase().includes(q));
+
+  // sort: expired first, then soonest expiry
+  rows.sort((a,b)=>{
+    const da=daysUntil(a.expiry), db_=daysUntil(b.expiry);
+    if(da===null&&db_===null) return a.name.localeCompare(b.name);
+    if(da===null) return 1; if(db_===null) return -1;
+    return da-db_;
+  });
+
+  const wrap = document.getElementById('tableWrap');
+  if(rows.length===0){
+    wrap.innerHTML = `<div class="empty">No documents here yet.<br><br>
+      <button class="btn-gold" onclick="openDocModal()">＋ Add your first document</button></div>`;
+    return;
+  }
+  let html = `<table><thead><tr>
+    <th>Document</th><th>Type</th>${currentFolder==="__ALL__"?"<th>Folder</th>":""}
+    <th>Review</th><th>Expiry / Reminder</th><th></th></tr></thead><tbody>`;
+  rows.forEach(d=>{
+    const nameCell = d.url ? `<a class="doclink" href="${esc(d.url)}" target="_blank">${esc(d.name)}</a>` : esc(d.name);
+    html += `<tr>
+      <td>${nameCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td>
+      <td>${esc(d.type)||'—'}</td>
+      ${currentFolder==="__ALL__"?`<td>${esc(d.folder)}</td>`:""}
+      <td>${fmtDate(d.review)}</td>
+      <td>${expiryPill(d.expiry)}</td>
+      <td><div class="row-actions">
+        <button class="btn-outline btn-sm" onclick="openDocModal('${d.id}')">✎</button>
+        <button class="btn-danger btn-sm" onclick="deleteDoc('${d.id}')">🗑</button>
+      </div></td></tr>`;
+  });
+  html += `</tbody></table>`;
+  wrap.innerHTML = html;
+}
+
+/* ============ DOCUMENT CRUD ============ */
+function openDocModal(id){
+  const sel = document.getElementById('docFolder');
+  sel.innerHTML = db.folders.map(f=>`<option>${esc(f)}</option>`).join('');
+  if(id){
+    const d = db.docs.find(x=>x.id===id);
+    document.getElementById('docModalTitle').textContent="Edit Document";
+    document.getElementById('docId').value=d.id;
+    sel.value=d.folder;
+    document.getElementById('docName').value=d.name;
+    document.getElementById('docType').value=d.type||'';
+    document.getElementById('docReview').value=d.review||'';
+    document.getElementById('docExpiry').value=d.expiry||'';
+    document.getElementById('docUrl').value=d.url||'';
+    document.getElementById('docNotes').value=d.notes||'';
+  }else{
+    document.getElementById('docModalTitle').textContent="Add Document";
+    ['docId','docName','docType','docReview','docExpiry','docUrl','docNotes'].forEach(i=>document.getElementById(i).value='');
+    if(currentFolder!=="__ALL__") sel.value=currentFolder;
+  }
+  document.getElementById('docOverlay').classList.add('show');
+}
+function closeDocModal(){ document.getElementById('docOverlay').classList.remove('show'); }
+function saveDoc(){
+  const name=document.getElementById('docName').value.trim();
+  if(!name){ alert("Please enter a document name."); return; }
+  const rec={
+    id:document.getElementById('docId').value||uid(),
+    folder:document.getElementById('docFolder').value,
+    name, type:document.getElementById('docType').value.trim(),
+    review:document.getElementById('docReview').value,
+    expiry:document.getElementById('docExpiry').value,
+    url:document.getElementById('docUrl').value.trim(),
+    notes:document.getElementById('docNotes').value.trim()
+  };
+  const i=db.docs.findIndex(x=>x.id===rec.id);
+  if(i>=0) db.docs[i]=rec; else db.docs.push(rec);
+  save(); closeDocModal(); render();
+}
+function deleteDoc(id){
+  if(!confirm("Delete this document?")) return;
+  db.docs=db.docs.filter(x=>x.id!==id); save(); render();
+}
+
+/* ============ FOLDER CRUD ============ */
+function openFolderModal(enc){
+  const old = enc?decodeURIComponent(enc):"";
+  document.getElementById('folderModalTitle').textContent = old?"Rename Folder":"Add Folder";
+  document.getElementById('folderOldName').value=old;
+  document.getElementById('folderName').value=old;
+  document.getElementById('folderOverlay').classList.add('show');
+}
+function closeFolderModal(){ document.getElementById('folderOverlay').classList.remove('show'); }
+function saveFolder(){
+  const name=document.getElementById('folderName').value.trim();
+  const old=document.getElementById('folderOldName').value;
+  if(!name){ alert("Please enter a folder name."); return; }
+  if(old){
+    if(name!==old && db.folders.includes(name)){ alert("A folder with that name already exists."); return; }
+    const idx=db.folders.indexOf(old);
+    db.folders[idx]=name;
+    db.docs.forEach(d=>{ if(d.folder===old) d.folder=name; });
+    if(currentFolder===old) currentFolder=name;
+  }else{
+    if(db.folders.includes(name)){ alert("A folder with that name already exists."); return; }
+    db.folders.push(name);
+  }
+  save(); closeFolderModal(); render();
+}
+function deleteFolder(enc){
+  const f=decodeURIComponent(enc);
+  const n=db.docs.filter(d=>d.folder===f).length;
+  if(!confirm(`Delete folder "${f}"?`+(n?`\n\nThis will also delete ${n} document(s) inside it.`:""))) return;
+  db.folders=db.folders.filter(x=>x!==f);
+  db.docs=db.docs.filter(d=>d.folder!==f);
+  if(currentFolder===f) currentFolder="__ALL__";
+  save(); render();
+}
+
+/* ============ EXPORT / IMPORT ============ */
+function exportData(){
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download="data.json";
+  a.click();
+}
+function importData(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const obj=JSON.parse(e.target.result);
+      if(!obj.folders||!obj.docs) throw new Error("bad file");
+      if(!confirm("Import will replace current data. Continue?")) return;
+      db=obj; currentFolder="__ALL__"; save(); render();
+      alert("Imported successfully.");
+    }catch(err){ alert("Could not import: invalid data file."); }
+  };
+  r.readAsText(file);
+  ev.target.value="";
+}
+
+/* auto-load data.json shipped in the repo on first ever visit */
+(async function boot(){
+  const firstTime = !localStorage.getItem(STORE_KEY);
+  if(firstTime){
+    try{
+      const res=await fetch('data.json',{cache:'no-store'});
+      if(res.ok){ const obj=await res.json(); if(obj.folders&&obj.docs){ db=obj; save(); } }
+    }catch(e){/* no data.json shipped — use seed */}
+  }
+  render();
+})();
+</script>
+</body>
+</html>
