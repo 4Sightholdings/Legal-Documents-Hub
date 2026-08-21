@@ -158,7 +158,12 @@
         <div class="hint">Documents expiring within 30 days are flagged automatically.</div>
       </div>
       <div class="field">
-        <label>Document Link (optional)</label>
+        <label>Attach Actual Document (optional)</label>
+        <input type="file" id="docFile" style="display:block;padding:8px;border:1px dashed var(--line);width:100%;background:#f8fafc;cursor:pointer" onchange="onFilePicked(event)" />
+        <div class="hint" id="fileHint">PDF, Word, image, etc. Stored in this browser. Max ~15 MB per file.</div>
+      </div>
+      <div class="field">
+        <label>Or Document Link (optional)</label>
         <input id="docUrl" placeholder="https://sharepoint… or file link" />
       </div>
       <div class="field">
@@ -210,6 +215,36 @@ const SEED = {
 
 let db = load();
 let currentFolder = "__ALL__";
+let pendingFile = undefined; // holds {name,type,dataUrl} when a new file is picked
+
+/* ============ FILE STORE (IndexedDB) ============ */
+let _idb;
+function idb(){
+  if(_idb) return Promise.resolve(_idb);
+  return new Promise((res,rej)=>{
+    const req = indexedDB.open("4sight_legal_files",1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore("files");
+    req.onsuccess = e => { _idb=e.target.result; res(_idb); };
+    req.onerror = e => rej(e);
+  });
+}
+async function saveFile(id,fileObj){ const d=await idb(); return new Promise((res,rej)=>{const t=d.transaction("files","readwrite");t.objectStore("files").put(fileObj,id);t.oncomplete=res;t.onerror=rej;}); }
+async function getFile(id){ const d=await idb(); return new Promise((res)=>{const t=d.transaction("files","readonly");const r=t.objectStore("files").get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);}); }
+async function delFile(id){ const d=await idb(); return new Promise((res)=>{const t=d.transaction("files","readwrite");t.objectStore("files").delete(id);t.oncomplete=res;t.onerror=res;}); }
+
+function onFilePicked(ev){
+  const f = ev.target.files[0];
+  if(!f){ pendingFile=undefined; return; }
+  if(f.size > 15*1024*1024){ alert("File is larger than 15 MB. Please use the Document Link field instead for very large files."); ev.target.value=""; pendingFile=undefined; return; }
+  const r = new FileReader();
+  r.onload = e => { pendingFile = {name:f.name, type:f.type, dataUrl:e.target.result}; document.getElementById('fileHint').textContent = "✔ Attached: "+f.name; };
+  r.readAsDataURL(f);
+}
+async function openStoredFile(id){
+  const f = await getFile(id);
+  if(!f){ alert("File not found in this browser."); return; }
+  const a=document.createElement('a'); a.href=f.dataUrl; a.download=f.name; a.click();
+}
 
 function load(){
   try{
@@ -315,8 +350,9 @@ function renderTable(){
     <th>Review</th><th>Expiry / Reminder</th><th></th></tr></thead><tbody>`;
   rows.forEach(d=>{
     const nameCell = d.url ? `<a class="doclink" href="${esc(d.url)}" target="_blank">${esc(d.name)}</a>` : esc(d.name);
+    const fileCell = d.fileName ? `<div class="hint">📎 <a class="doclink" href="javascript:void(0)" onclick="openStoredFile('${d.id}')">${esc(d.fileName)}</a></div>` : "";
     html += `<tr>
-      <td>${nameCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td>
+      <td>${nameCell}${fileCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td>
       <td>${esc(d.type)||'—'}</td>
       ${currentFolder==="__ALL__"?`<td>${esc(d.folder)}</td>`:""}
       <td>${fmtDate(d.review)}</td>
@@ -350,12 +386,19 @@ function openDocModal(id){
     ['docId','docName','docType','docReview','docExpiry','docUrl','docNotes'].forEach(i=>document.getElementById(i).value='');
     if(currentFolder!=="__ALL__") sel.value=currentFolder;
   }
+  pendingFile=undefined;
+  document.getElementById('docFile').value="";
+  const existing = id ? db.docs.find(x=>x.id===id) : null;
+  document.getElementById('fileHint').textContent = (existing&&existing.fileName)
+    ? "✔ Currently attached: "+existing.fileName+" (choose a new file to replace)"
+    : "PDF, Word, image, etc. Stored in this browser. Max ~15 MB per file.";
   document.getElementById('docOverlay').classList.add('show');
 }
 function closeDocModal(){ document.getElementById('docOverlay').classList.remove('show'); }
-function saveDoc(){
+async function saveDoc(){
   const name=document.getElementById('docName').value.trim();
   if(!name){ alert("Please enter a document name."); return; }
+  const existing = db.docs.find(x=>x.id===document.getElementById('docId').value);
   const rec={
     id:document.getElementById('docId').value||uid(),
     folder:document.getElementById('docFolder').value,
@@ -363,14 +406,20 @@ function saveDoc(){
     review:document.getElementById('docReview').value,
     expiry:document.getElementById('docExpiry').value,
     url:document.getElementById('docUrl').value.trim(),
-    notes:document.getElementById('docNotes').value.trim()
+    notes:document.getElementById('docNotes').value.trim(),
+    fileName: (existing&&existing.fileName)||""
   };
+  if(pendingFile){
+    await saveFile(rec.id, pendingFile);
+    rec.fileName = pendingFile.name;
+  }
   const i=db.docs.findIndex(x=>x.id===rec.id);
   if(i>=0) db.docs[i]=rec; else db.docs.push(rec);
   save(); closeDocModal(); render();
 }
-function deleteDoc(id){
+async function deleteDoc(id){
   if(!confirm("Delete this document?")) return;
+  await delFile(id);
   db.docs=db.docs.filter(x=>x.id!==id); save(); render();
 }
 
