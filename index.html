@@ -27,7 +27,7 @@
   header .titles h1{font-size:22px;margin:0;font-weight:600;letter-spacing:-.02em}
   header .titles p{margin:3px 0 0;font-size:13px;color:#b9c6da;font-weight:400}
   header .spacer{flex:1}
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap}
   button{cursor:pointer;border:none;font-family:var(--font);border-radius:980px;padding:10px 18px;font-size:13px;font-weight:500;transition:.18s;letter-spacing:-.01em}
   .btn-primary{background:var(--blue);color:#fff}
   .btn-primary:hover{background:var(--blue-dark)}
@@ -41,13 +41,10 @@
   .btn-mail:hover{background:var(--navy-2)}
   .btn-sm{padding:6px 13px;font-size:12px}
   /* Token status light */
-  .token-light{display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:980px;background:rgba(255,255,255,.14);cursor:pointer;transition:.18s;color:#fff;font-size:12px;font-weight:500}
+  .token-light{display:flex;align-items:center;justify-content:center;padding:11px;border-radius:980px;background:rgba(255,255,255,.14);cursor:pointer;transition:.18s}
   .token-light:hover{background:rgba(255,255,255,.24)}
   .token-light .dot{width:10px;height:10px;border-radius:50%;background:#37d67a;box-shadow:0 0 8px rgba(55,214,122,.85)}
   .token-light.off .dot{background:#9aa4b2;box-shadow:none}
-  .token-light.syncing .dot{background:#f5c518;box-shadow:0 0 8px rgba(245,197,24,.85);animation:pulse 1s infinite}
-  .token-light.err .dot{background:#d81f2a;box-shadow:0 0 8px rgba(216,31,42,.85)}
-  @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
   .layout{display:flex;min-height:calc(100vh - 110px);padding:18px 22px 22px;gap:22px}
   aside{width:280px;background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);height:fit-content}
   aside h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 12px;font-weight:600}
@@ -110,13 +107,76 @@
   a.maillink:hover{text-decoration:underline}
   .footnote{font-size:11px;color:var(--muted);text-align:center;padding:20px}
   input#importFile{display:none}
+
+  /* ===== LOGIN SCREEN ===== */
+  #app{display:none}
+  .login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:22px;
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));}
+  .login-card{background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);width:100%;max-width:420px;padding:38px 34px 30px;text-align:center}
+  .login-logo{height:56px;width:auto;margin:0 auto 8px;display:block}
+  .login-wordmark{font-size:38px;font-weight:600;letter-spacing:-.02em;color:var(--navy);display:none;align-items:baseline;justify-content:center;line-height:1;margin-bottom:8px}
+  .login-wordmark .dot{width:9px;height:9px;border-radius:50%;background:var(--red);display:inline-block;margin-left:1px;transform:translateY(-16px)}
+  .login-wordmark .ai{color:var(--red);font-weight:700}
+  .login-card h1{font-size:22px;margin:14px 0 4px;font-weight:600;letter-spacing:-.02em;color:var(--text)}
+  .login-card p.sub{font-size:13px;color:var(--muted);margin:0 0 24px}
+  .login-field{text-align:left;margin-bottom:14px}
+  .login-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em}
+  .pw-wrap{position:relative}
+  .login-field input{width:100%;padding:13px 46px 13px 14px;border:1px solid var(--line);border-radius:12px;font-size:15px;font-family:var(--font);background:#fff}
+  .login-field input:focus{outline:none;border-color:var(--blue)}
+  .pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;color:var(--muted);border:none;padding:6px 8px;font-size:12px;font-weight:600;cursor:pointer;border-radius:8px}
+  .pw-toggle:hover{background:#f0f0f3;color:var(--navy)}
+  .login-btn{width:100%;background:var(--blue);color:#fff;padding:13px;font-size:15px;font-weight:600;border-radius:12px;margin-top:6px}
+  .login-btn:hover{background:var(--blue-dark)}
+  .login-remember{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:4px 2px 18px;text-align:left}
+  .login-remember input{width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
+  .login-error{background:#fdecec;color:var(--red);font-size:13px;font-weight:500;border-radius:10px;padding:10px 12px;margin-bottom:16px;display:none}
+  .login-error.show{display:block}
+  .login-foot{font-size:11px;color:var(--muted);margin-top:22px;line-height:1.5}
 </style>
 </head>
 <body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <img class="login-logo" src="https://4sightholdings.github.io/SS-Clicktrack-Reporting/4Sight-4AI-White.png" alt="4Sight"
+         onerror="this.style.display='none';document.getElementById('loginWordmark').style.display='flex';"
+         style="filter:none" />
+    <div class="login-wordmark" id="loginWordmark">4Sight<span class="dot"></span>&nbsp;<span class="ai">4AI</span></div>
+    <h1>Legal Documents Hub</h1>
+    <p class="sub">Enter your access token to continue</p>
+
+    <div class="login-error" id="loginError">Incorrect token. Please try again.</div>
+
+    <div class="login-field">
+      <label>Access Token</label>
+      <div class="pw-wrap">
+        <input type="password" id="loginToken" placeholder="Enter your token…"
+               onkeydown="if(event.key==='Enter'){doLogin()}" autocomplete="current-password" />
+        <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePw()">Show</button>
+      </div>
+    </div>
+
+    <label class="login-remember">
+      <input type="checkbox" id="rememberMe" checked />
+      Keep me signed in on this device
+    </label>
+
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+
+    <div class="login-foot">
+      Your token unlocks the hub and enables sync.<br>It is stored only on this device.
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP (hidden until authenticated) ===== -->
+<div id="app">
 <div class="topwrap">
 <header>
   <!-- Uses the known-good transparent logo already hosted on the Click Track site.
-       If the image fails, the red-dot wordmark fallback below is shown automatically. -->
+       If you later add 4Sight-4AI-White.png to THIS repo, you can switch src to it. -->
   <img class="logo" src="https://4sightholdings.github.io/SS-Clicktrack-Reporting/4Sight-4AI-White.png" alt="4Sight"
        onerror="this.style.display='none';document.getElementById('wordmark').style.display='flex';" />
   <div class="wordmark" id="wordmark" style="display:none">4Sight<span class="dot"></span>&nbsp;<span class="ai">4AI</span></div>
@@ -128,13 +188,13 @@
   <div class="spacer"></div>
   <div class="toolbar">
     <div class="token-light off" id="tokenLight" onclick="manageToken()" title="Token status">
-      <span class="dot"></span><span id="tokenLabel">Sync off</span>
+      <span class="dot"></span>
     </div>
-    <button class="btn-ghost" onclick="syncNow()">Sync now</button>
     <button class="btn-ghost" onclick="exportData()">Export</button>
     <button class="btn-ghost" onclick="document.getElementById('importFile').click()">Import</button>
     <input type="file" id="importFile" accept=".json" onchange="importData(event)" />
     <button class="btn-primary" onclick="openDocModal()">＋ Add Document</button>
+    <button class="btn-soft-danger" onclick="signOut()">Sign out</button>
   </div>
 </header>
 </div>
@@ -182,7 +242,7 @@
       <div id="contactsWrap"></div>
     </div>
 
-    <div class="footnote">Data auto-saves in this browser and, when a token is set, syncs to <code>data.json</code> on GitHub. Use <b>Export</b> for a manual backup.</div>
+    <div class="footnote">Data is saved automatically in this browser. Use <b>Export</b> to back up or commit <code>data.json</code> to GitHub.</div>
   </main>
 </div>
 
@@ -291,23 +351,9 @@
     </div>
   </div>
 </div>
+</div><!-- /#app -->
 
 <script>
-/* =====================================================================
-   GITHUB SYNC CONFIG  —  EDIT THESE THREE VALUES TO MATCH YOUR REPO
-   ---------------------------------------------------------------------
-   OWNER  : the GitHub account/org that owns the repo
-   REPO   : the repository name where this page + data.json live
-   BRANCH : usually "main"
-   PATH   : filename to write (keep "data.json" unless you moved it)
-   ===================================================================== */
-const GH = {
-  OWNER : "4sightholdings",
-  REPO  : "SS-Clicktrack-Reporting",
-  BRANCH: "main",
-  PATH  : "data.json"
-};
-
 const STORE_KEY = "4sight_legal_hub_v1";
 const SEED = {
   folders: [
@@ -321,103 +367,93 @@ let db = load();
 let currentFolder = "__ALL__";
 let currentTab = "docs";
 let pendingFile = undefined;
-let remoteSha = null;   // last known sha of data.json on GitHub
 
 function load(){ try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const o=JSON.parse(raw); if(!o.contacts) o.contacts=[]; return o; } }catch(e){} return JSON.parse(JSON.stringify(SEED)); }
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
 
-/* =====================================================================
-   TOKEN + GITHUB SYNC
-   ===================================================================== */
-const TOKEN_KEY="4sight_legal_hub_token";
-function getToken(){ return (localStorage.getItem(TOKEN_KEY)||"").trim(); }
+/* =========================================================
+   AUTH — the login password IS the token
+   ========================================================= */
+const TOKEN_KEY="4sight_legal_hub_token";          // persistent (Keep me signed in)
+const SESSION_KEY="4sight_legal_hub_token_session"; // per-session (this tab only)
+const MIN_TOKEN_LEN=6; // minimum characters accepted as a valid token
 
-function setLight(state,label){
-  const el=document.getElementById('tokenLight');
-  el.classList.remove('off','syncing','err');
-  if(state) el.classList.add(state);
-  document.getElementById('tokenLabel').textContent=label;
+/* Returns the active token from either persistent or session storage */
+function activeToken(){
+  return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(SESSION_KEY) || "";
 }
+function isAuthed(){ return !!activeToken(); }
+
+function togglePw(){
+  const inp=document.getElementById('loginToken');
+  const btn=document.getElementById('pwToggle');
+  if(inp.type==='password'){ inp.type='text'; btn.textContent='Hide'; }
+  else{ inp.type='password'; btn.textContent='Show'; }
+}
+
+function doLogin(){
+  const inp=document.getElementById('loginToken');
+  const err=document.getElementById('loginError');
+  const token=(inp.value||"").trim();
+  if(token.length < MIN_TOKEN_LEN){
+    err.textContent = token ? "That token looks too short. Please check and try again."
+                            : "Please enter your access token.";
+    err.classList.add('show');
+    inp.focus();
+    return;
+  }
+  err.classList.remove('show');
+  // Store the token — persistent if "keep me signed in", otherwise session only.
+  if(document.getElementById('rememberMe').checked){
+    localStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.removeItem(SESSION_KEY);
+  } else {
+    sessionStorage.setItem(SESSION_KEY, token);
+    localStorage.removeItem(TOKEN_KEY);
+  }
+  unlockApp();
+}
+
+function unlockApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  renderTokenLight();
+  render();
+}
+
+function signOut(){
+  if(!confirm("Sign out of the Legal Documents Hub?\n\nYou'll need your access token to sign back in.")) return;
+  localStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('app').style.display='none';
+  const ls=document.getElementById('loginScreen');
+  ls.style.display='flex';
+  const inp=document.getElementById('loginToken');
+  inp.value=''; inp.type='password';
+  document.getElementById('pwToggle').textContent='Show';
+  document.getElementById('loginError').classList.remove('show');
+  inp.focus();
+}
+
+/* ---- Token status light (now reflects the login token) ---- */
 function renderTokenLight(){
-  if(getToken()){ setLight("", "Sync on"); document.getElementById('tokenLight').title="Token connected — click to update or remove"; }
-  else{ setLight("off","Sync off"); document.getElementById('tokenLight').title="No token set — click to add a GitHub token"; }
+  const el=document.getElementById('tokenLight');
+  if(isAuthed()){ el.classList.remove('off'); el.title="Token active — click to update or sign out"; }
+  else{ el.classList.add('off'); el.title="No token set"; }
 }
 function manageToken(){
-  const cur=getToken();
-  if(cur){
-    if(confirm("A token is currently saved.\n\nOK = update it   |   Cancel = remove it")){
-      const t=prompt("Enter GitHub token (fine-grained, Contents: Read and write on this repo):",""); if(t!==null && t.trim()){ localStorage.setItem(TOKEN_KEY,t.trim()); renderTokenLight(); syncNow(); }
-    } else { localStorage.removeItem(TOKEN_KEY); }
+  if(confirm("You're signed in with your token.\n\nOK = update the token   |   Cancel = sign out")){
+    const t=prompt("Enter a new token:","");
+    if(t!==null && t.trim().length>=MIN_TOKEN_LEN){
+      if(localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY,t.trim());
+      else sessionStorage.setItem(SESSION_KEY,t.trim());
+      renderTokenLight();
+    } else if(t!==null){
+      alert("That token looks too short — no change made.");
+    }
   } else {
-    const t=prompt("Enter a GitHub token to enable sync\n(fine-grained PAT, Contents: Read and write on this repo):",""); if(t && t.trim()){ localStorage.setItem(TOKEN_KEY,t.trim()); renderTokenLight(); syncNow(); return; }
+    signOut();
   }
-  renderTokenLight();
-}
-
-/* base64 helpers that safely handle unicode */
-function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
-function b64decode(str){ return decodeURIComponent(escape(atob(str))); }
-
-const GH_API = ()=>`https://api.github.com/repos/${GH.OWNER}/${GH.REPO}/contents/${encodeURIComponent(GH.PATH)}`;
-
-/* Fetch current data.json (to get its sha, and optionally its content) */
-async function ghGet(){
-  const token=getToken();
-  const res=await fetch(`${GH_API()}?ref=${GH.BRANCH}&t=${Date.now()}`,{
-    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }
-  });
-  if(res.status===404){ remoteSha=null; return null; }        // file doesn't exist yet
-  if(!res.ok) throw new Error("GET failed ("+res.status+")");
-  const j=await res.json();
-  remoteSha=j.sha;
-  return j;
-}
-
-/* Push current db to data.json on GitHub */
-async function ghPut(){
-  const token=getToken();
-  if(!token) throw new Error("No token");
-  // Always refresh sha first so we don't collide with another update
-  try{ await ghGet(); }catch(e){ /* if GET fails on 404 we treat as new file */ }
-  const body={
-    message:"Update legal hub data.json — "+new Date().toISOString(),
-    content:b64encode(JSON.stringify(db,null,2)),
-    branch:GH.BRANCH
-  };
-  if(remoteSha) body.sha=remoteSha;
-  const res=await fetch(GH_API(),{
-    method:"PUT",
-    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
-    body:JSON.stringify(body)
-  });
-  if(!res.ok){ const t=await res.text(); throw new Error("PUT failed ("+res.status+"): "+t.slice(0,140)); }
-  const j=await res.json();
-  remoteSha=j.content && j.content.sha ? j.content.sha : remoteSha;
-  return true;
-}
-
-/* Manual "Sync now" — pushes local state up to GitHub */
-async function syncNow(){
-  if(!getToken()){ manageToken(); return; }
-  setLight("syncing","Syncing…");
-  try{
-    await ghPut();
-    setLight("","Synced ✓");
-    setTimeout(renderTokenLight,2500);
-  }catch(err){
-    setLight("err","Sync failed");
-    console.error(err);
-    alert("GitHub sync failed:\n\n"+err.message+"\n\nCheck: repo owner/name/branch in the config, token permissions (Contents: Read & write), and that the token hasn't expired.");
-    setTimeout(renderTokenLight,3500);
-  }
-}
-
-/* Auto-push helper: called after every change. Silent unless it fails. */
-async function autoSync(){
-  if(!getToken()) return;                 // no token = local only, stay quiet
-  setLight("syncing","Syncing…");
-  try{ await ghPut(); setLight("","Synced ✓"); setTimeout(renderTokenLight,2000); }
-  catch(err){ setLight("err","Sync failed"); console.error(err); setTimeout(renderTokenLight,3000); }
 }
 
 /* File store (IndexedDB) */
@@ -545,9 +581,9 @@ async function saveDoc(){
   const rec={ id:document.getElementById('docId').value||uid(), folder:document.getElementById('docFolder').value, name, type:document.getElementById('docType').value.trim(), ownerId:document.getElementById('docOwner').value, review:document.getElementById('docReview').value, expiry:document.getElementById('docExpiry').value, url:document.getElementById('docUrl').value.trim(), notes:document.getElementById('docNotes').value.trim(), fileName:(ex&&ex.fileName)||"" };
   if(pendingFile){ await saveFile(rec.id,pendingFile); rec.fileName=pendingFile.name; }
   const i=db.docs.findIndex(x=>x.id===rec.id); if(i>=0) db.docs[i]=rec; else db.docs.push(rec);
-  save(); closeDocModal(); render(); autoSync();
+  save(); closeDocModal(); render();
 }
-async function deleteDoc(id){ if(!confirm("Delete this document?")) return; await delFile(id); db.docs=db.docs.filter(x=>x.id!==id); save(); render(); autoSync(); }
+async function deleteDoc(id){ if(!confirm("Delete this document?")) return; await delFile(id); db.docs=db.docs.filter(x=>x.id!==id); save(); render(); }
 
 /* ---- Folder CRUD ---- */
 function openFolderModal(enc){ const old=enc?decodeURIComponent(enc):""; document.getElementById('folderModalTitle').textContent=old?"Rename Folder":"Add Folder"; document.getElementById('folderOldName').value=old; document.getElementById('folderName').value=old; document.getElementById('folderOverlay').classList.add('show'); }
@@ -557,9 +593,9 @@ function saveFolder(){
   if(!name){ alert("Please enter a folder name."); return; }
   if(old){ if(name!==old&&db.folders.includes(name)){alert("A folder with that name already exists.");return;} const idx=db.folders.indexOf(old); db.folders[idx]=name; db.docs.forEach(d=>{if(d.folder===old)d.folder=name;}); if(currentFolder===old)currentFolder=name; }
   else{ if(db.folders.includes(name)){alert("A folder with that name already exists.");return;} db.folders.push(name); }
-  save(); closeFolderModal(); render(); autoSync();
+  save(); closeFolderModal(); render();
 }
-function deleteFolder(enc){ const f=decodeURIComponent(enc); const n=db.docs.filter(d=>d.folder===f).length; if(!confirm(`Delete folder "${f}"?`+(n?`\n\nThis will also delete ${n} document(s) inside it.`:""))) return; db.folders=db.folders.filter(x=>x!==f); db.docs=db.docs.filter(d=>d.folder!==f); if(currentFolder===f)currentFolder="__ALL__"; save(); render(); autoSync(); }
+function deleteFolder(enc){ const f=decodeURIComponent(enc); const n=db.docs.filter(d=>d.folder===f).length; if(!confirm(`Delete folder "${f}"?`+(n?`\n\nThis will also delete ${n} document(s) inside it.`:""))) return; db.folders=db.folders.filter(x=>x!==f); db.docs=db.docs.filter(d=>d.folder!==f); if(currentFolder===f)currentFolder="__ALL__"; save(); render(); }
 
 /* ---- Contact CRUD ---- */
 function openContactModal(id){
@@ -576,28 +612,29 @@ function saveContact(){
   if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ alert("Please enter a valid email address."); return; }
   const rec={ id:document.getElementById('contactId').value||uid(), name, email, title:document.getElementById('contactTitle').value.trim(), entity:document.getElementById('contactEntity').value };
   const i=db.contacts.findIndex(x=>x.id===rec.id); if(i>=0) db.contacts[i]=rec; else db.contacts.push(rec);
-  save(); closeContactModal(); renderContacts(); render(); autoSync();
+  save(); closeContactModal(); renderContacts(); render();
 }
 function deleteContact(id){
   const cnt=db.docs.filter(d=>d.ownerId===id).length;
   if(!confirm("Delete this contact?"+(cnt?`\n\n${cnt} document(s) are assigned to them and will be left without an owner.`:""))) return;
   db.contacts=db.contacts.filter(x=>x.id!==id);
   db.docs.forEach(d=>{ if(d.ownerId===id) d.ownerId=""; });
-  save(); renderContacts(); render(); autoSync();
+  save(); renderContacts(); render();
 }
 
 /* ---- Export / Import ---- */
 function exportData(){ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="data.json"; a.click(); }
-function importData(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{ try{ const obj=JSON.parse(e.target.result); if(!obj.folders||!obj.docs) throw 0; if(!obj.contacts) obj.contacts=[]; if(!confirm("Import will replace current data. Continue?")) return; db=obj; currentFolder="__ALL__"; save(); render(); if(currentTab==='contacts') renderContacts(); autoSync(); alert("Imported successfully."); }catch(err){ alert("Could not import: invalid data file."); } }; r.readAsText(file); ev.target.value=""; }
+function importData(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{ try{ const obj=JSON.parse(e.target.result); if(!obj.folders||!obj.docs) throw 0; if(!obj.contacts) obj.contacts=[]; if(!confirm("Import will replace current data. Continue?")) return; db=obj; currentFolder="__ALL__"; save(); render(); if(currentTab==='contacts') renderContacts(); alert("Imported successfully."); }catch(err){ alert("Could not import: invalid data file."); } }; r.readAsText(file); ev.target.value=""; }
 
-/* ---- Boot: prefer the live data.json from GitHub, then seed local ---- */
+/* ---- Boot: gate everything behind the token login ---- */
 (async function boot(){
-  try{
-    const res=await fetch(GH.PATH+'?t='+Date.now(),{cache:'no-store'});
-    if(res.ok){ const obj=await res.json(); if(obj&&obj.folders&&obj.docs){ if(!obj.contacts) obj.contacts=[]; db=obj; save(); } }
-  }catch(e){ /* offline or file not present yet — fall back to local/seed */ }
-  renderTokenLight();
-  render();
+  if(!localStorage.getItem(STORE_KEY)){ try{ const res=await fetch('data.json',{cache:'no-store'}); if(res.ok){ const obj=await res.json(); if(obj.folders&&obj.docs){ if(!obj.contacts) obj.contacts=[]; db=obj; save(); } } }catch(e){} }
+  if(isAuthed()){
+    unlockApp();
+  } else {
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('loginToken').focus();
+  }
 })();
 </script>
 </body>
