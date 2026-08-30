@@ -8,7 +8,14 @@
     "Dynamics Africa Services (Pty) Ltd",
     "Namibia"
   ],
-  "contacts": [],
+  "contacts": [
+    {
+      "id": "mtfzpcpsugps7",
+      "name": "Christo Jvv",
+      "email": "christo.jvvuuren@4sight.cloud",
+      "title": "Marketing Co - Ordinator",
+      "entity": "4Sight Africa (Pty) Ltd"
+    }
+  ],
   "docs": []
 }
-
