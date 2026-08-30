@@ -126,9 +126,31 @@
   a.maillink:hover{text-decoration:underline}
   .footnote{font-size:11px;color:var(--muted);text-align:center;padding:20px}
   input#importFile{display:none}
+  /* Login gate */
+  .login-gate{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),var(--navy-2));display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .login-card{background:#fff;border-radius:22px;max-width:400px;width:100%;padding:40px 34px;box-shadow:var(--shadow-lg);text-align:center}
+  .login-card h1{font-size:25px;font-weight:600;color:var(--navy);margin:0 0 6px;letter-spacing:-.02em}
+  .login-card p{font-size:13px;color:var(--muted);margin:0 0 26px}
+  .login-card input{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:12px;font-size:15px;font-family:var(--font);margin-bottom:14px;text-align:center}
+  .login-card input:focus{outline:none;border-color:var(--blue)}
+  .login-card button{width:100%;background:var(--blue);color:#fff;padding:13px;font-size:15px;font-weight:600;border-radius:12px;transition:.18s}
+  .login-card button:hover{background:var(--blue-dark)}
+  .login-err{color:var(--red);font-size:13px;margin-top:12px;min-height:18px;font-weight:500}
 </style>
 </head>
 <body>
+<!-- LOGIN GATE (no logo — heading only) -->
+<div class="login-gate" id="loginGate">
+  <div class="login-card">
+    <h1>Login — Legal Documents Hub</h1>
+    <p>Please enter your access password to continue</p>
+    <input type="password" id="loginPass" placeholder="Access password" autocomplete="off"
+           onkeydown="if(event.key==='Enter')doLogin()" />
+    <button onclick="doLogin()">Login</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
 <div class="topwrap">
 <header>
   <!-- Uses the known-good transparent logo already hosted on the Click Track site.
@@ -325,6 +347,35 @@ const GH = {
   BRANCH: "main",
   PATH  : "data.json"
 };
+
+/* =====================================================================
+   LOGIN GATE  —  password/token must END WITH this value to get in.
+   (Change LOGIN_SUFFIX below to update the required ending.)
+   Note: this is a light client-side gate/deterrent, not hard security —
+   keep the repo Private for real protection.
+   ===================================================================== */
+const LOGIN_SUFFIX = "3HUipW";
+const LOGIN_FLAG   = "4sight_legal_hub_authed";
+function doLogin(){
+  const v=(document.getElementById('loginPass').value||"");
+  if(v && v.endsWith(LOGIN_SUFFIX)){
+    sessionStorage.setItem(LOGIN_FLAG,"1");
+    document.getElementById('loginErr').textContent="";
+    document.getElementById('loginGate').style.display='none';
+  } else {
+    document.getElementById('loginErr').textContent="Incorrect password — access denied.";
+    document.getElementById('loginPass').value="";
+    document.getElementById('loginPass').focus();
+  }
+}
+function checkAuth(){
+  if(sessionStorage.getItem(LOGIN_FLAG)==="1"){
+    document.getElementById('loginGate').style.display='none';
+  } else {
+    document.getElementById('loginGate').style.display='flex';
+    setTimeout(()=>{ const p=document.getElementById('loginPass'); if(p) p.focus(); },80);
+  }
+}
 
 const STORE_KEY = "4sight_legal_hub_v1";
 /* Seed folders are simple names; migrate() converts them into {id,name,parentId} objects. */
@@ -758,6 +809,7 @@ function importData(ev){ const file=ev.target.files[0]; if(!file) return; const 
 
 /* ---- Boot: prefer live data.json from GitHub, then seed local ---- */
 (async function boot(){
+  checkAuth();   // enforce the login gate before anything else
   try{
     const res=await fetch(GH.PATH+'?t='+Date.now(),{cache:'no-store'});
     if(res.ok){ const obj=await res.json(); if(obj&&obj.folders&&obj.docs){ db=migrate(obj); save(); } }
