@@ -27,7 +27,7 @@
   header .titles h1{font-size:22px;margin:0;font-weight:600;letter-spacing:-.02em}
   header .titles p{margin:3px 0 0;font-size:13px;color:#b9c6da;font-weight:400}
   header .spacer{flex:1}
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   button{cursor:pointer;border:none;font-family:var(--font);border-radius:980px;padding:10px 18px;font-size:13px;font-weight:500;transition:.18s;letter-spacing:-.01em}
   .btn-primary{background:var(--blue);color:#fff}
   .btn-primary:hover{background:var(--blue-dark)}
@@ -41,19 +41,30 @@
   .btn-mail:hover{background:var(--navy-2)}
   .btn-sm{padding:6px 13px;font-size:12px}
   /* Token status light */
-  .token-light{display:flex;align-items:center;justify-content:center;padding:11px;border-radius:980px;background:rgba(255,255,255,.14);cursor:pointer;transition:.18s}
+  .token-light{display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:980px;background:rgba(255,255,255,.14);cursor:pointer;transition:.18s;color:#fff;font-size:12px;font-weight:500}
   .token-light:hover{background:rgba(255,255,255,.24)}
   .token-light .dot{width:10px;height:10px;border-radius:50%;background:#37d67a;box-shadow:0 0 8px rgba(55,214,122,.85)}
   .token-light.off .dot{background:#9aa4b2;box-shadow:none}
+  .token-light.syncing .dot{background:#f5c518;box-shadow:0 0 8px rgba(245,197,24,.85);animation:pulse 1s infinite}
+  .token-light.err .dot{background:#d81f2a;box-shadow:0 0 8px rgba(216,31,42,.85)}
+  @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
   .layout{display:flex;min-height:calc(100vh - 110px);padding:18px 22px 22px;gap:22px}
-  aside{width:280px;background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);height:fit-content}
+  aside{width:300px;background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);height:fit-content}
   aside h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 12px;font-weight:600}
-  .folder{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;cursor:pointer;margin-bottom:3px;font-size:14px;transition:.15s}
+  .folder{display:flex;align-items:center;gap:6px;padding:9px 10px;border-radius:12px;cursor:pointer;margin-bottom:2px;font-size:14px;transition:.15s}
   .folder:hover{background:#f0f0f3}
   .folder.active{background:var(--blue);color:#fff}
   .folder .count{margin-left:auto;font-size:11px;background:#eaeaef;color:var(--muted);border-radius:20px;padding:2px 9px;font-weight:600}
   .folder.active .count{background:rgba(255,255,255,.25);color:#fff}
   .folder .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chev{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;font-size:10px;color:var(--muted);border-radius:5px;flex:none}
+  .chev:hover{background:rgba(0,0,0,.08)}
+  .folder.active .chev{color:#fff}
+  .chev-sp{display:inline-block;width:16px;flex:none}
+  .addsub{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;font-size:13px;color:var(--muted);border-radius:6px;flex:none;opacity:0;transition:.15s}
+  .folder:hover .addsub{opacity:1}
+  .addsub:hover{background:rgba(0,113,227,.14);color:var(--blue)}
+  .folder.active .addsub{color:#fff;opacity:.85}
   main{flex:1;overflow-y:auto}
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:22px}
   .stat{background:var(--card);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
@@ -69,6 +80,8 @@
   .panel-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap}
   .panel-head h2{margin:0;font-size:24px;color:var(--text);font-weight:600;letter-spacing:-.02em}
   .panel-head .spacer{flex:1}
+  .crumb{font-size:12px;color:var(--muted);margin:-6px 0 14px;font-weight:500}
+  .crumb b{color:var(--navy)}
   .search{padding:10px 15px;border:1px solid var(--line);border-radius:980px;font-size:13px;min-width:220px;background:#fff;font-family:var(--font)}
   .search:focus{outline:none;border-color:var(--blue)}
   select.filter{padding:10px 15px;border:1px solid var(--line);border-radius:980px;font-size:13px;background:#fff;font-family:var(--font);cursor:pointer}
@@ -79,6 +92,7 @@
   td{padding:15px 18px;border-top:1px solid var(--line);font-size:14px;vertical-align:middle}
   tbody tr:first-child td{border-top:none}
   tr:hover td{background:#fafafd}
+  .subrow td{background:#f7f9fc}
   .owner-name{font-weight:500}
   .owner-mail{font-size:12px;color:var(--muted)}
   .pill{display:inline-block;padding:3px 12px;border-radius:980px;font-size:11px;font-weight:600;letter-spacing:.01em}
@@ -86,6 +100,11 @@
   .pill.warn{background:#fdf0e3;color:var(--warn)}
   .pill.exp{background:#fdecec;color:var(--red)}
   .pill.none{background:#eeeef2;color:var(--muted)}
+  .subfolder-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--line);border-radius:12px;font-size:13px;cursor:pointer;background:#fff;margin:0 8px 8px 0;transition:.15s}
+  .subfolder-chip:hover{border-color:var(--blue);background:#f0f6ff}
+  .subfolder-chip .c{font-size:11px;color:var(--muted);background:#eaeaef;border-radius:20px;padding:1px 8px;font-weight:600}
+  .subfolder-bar{margin-bottom:16px}
+  .subfolder-bar .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;margin-bottom:8px}
   .empty{padding:60px;text-align:center;color:var(--muted);font-size:14px}
   .row-actions{display:flex;gap:6px;flex-wrap:wrap}
   .overlay{position:fixed;inset:0;background:rgba(29,29,31,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -107,76 +126,13 @@
   a.maillink:hover{text-decoration:underline}
   .footnote{font-size:11px;color:var(--muted);text-align:center;padding:20px}
   input#importFile{display:none}
-
-  /* ===== LOGIN SCREEN ===== */
-  #app{display:none}
-  .login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:22px;
-    background:linear-gradient(135deg,var(--navy),var(--navy-2));}
-  .login-card{background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);width:100%;max-width:420px;padding:38px 34px 30px;text-align:center}
-  .login-logo{height:56px;width:auto;margin:0 auto 8px;display:block}
-  .login-wordmark{font-size:38px;font-weight:600;letter-spacing:-.02em;color:var(--navy);display:none;align-items:baseline;justify-content:center;line-height:1;margin-bottom:8px}
-  .login-wordmark .dot{width:9px;height:9px;border-radius:50%;background:var(--red);display:inline-block;margin-left:1px;transform:translateY(-16px)}
-  .login-wordmark .ai{color:var(--red);font-weight:700}
-  .login-card h1{font-size:22px;margin:14px 0 4px;font-weight:600;letter-spacing:-.02em;color:var(--text)}
-  .login-card p.sub{font-size:13px;color:var(--muted);margin:0 0 24px}
-  .login-field{text-align:left;margin-bottom:14px}
-  .login-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em}
-  .pw-wrap{position:relative}
-  .login-field input{width:100%;padding:13px 46px 13px 14px;border:1px solid var(--line);border-radius:12px;font-size:15px;font-family:var(--font);background:#fff}
-  .login-field input:focus{outline:none;border-color:var(--blue)}
-  .pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;color:var(--muted);border:none;padding:6px 8px;font-size:12px;font-weight:600;cursor:pointer;border-radius:8px}
-  .pw-toggle:hover{background:#f0f0f3;color:var(--navy)}
-  .login-btn{width:100%;background:var(--blue);color:#fff;padding:13px;font-size:15px;font-weight:600;border-radius:12px;margin-top:6px}
-  .login-btn:hover{background:var(--blue-dark)}
-  .login-remember{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:4px 2px 18px;text-align:left}
-  .login-remember input{width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
-  .login-error{background:#fdecec;color:var(--red);font-size:13px;font-weight:500;border-radius:10px;padding:10px 12px;margin-bottom:16px;display:none}
-  .login-error.show{display:block}
-  .login-foot{font-size:11px;color:var(--muted);margin-top:22px;line-height:1.5}
 </style>
 </head>
 <body>
-
-<!-- ===== LOGIN SCREEN ===== -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <img class="login-logo" src="https://4sightholdings.github.io/SS-Clicktrack-Reporting/4Sight-4AI-White.png" alt="4Sight"
-         onerror="this.style.display='none';document.getElementById('loginWordmark').style.display='flex';"
-         style="filter:none" />
-    <div class="login-wordmark" id="loginWordmark">4Sight<span class="dot"></span>&nbsp;<span class="ai">4AI</span></div>
-    <h1>Legal Documents Hub</h1>
-    <p class="sub">Enter your access token to continue</p>
-
-    <div class="login-error" id="loginError">Incorrect token. Please try again.</div>
-
-    <div class="login-field">
-      <label>Access Token</label>
-      <div class="pw-wrap">
-        <input type="password" id="loginToken" placeholder="Enter your token…"
-               onkeydown="if(event.key==='Enter'){doLogin()}" autocomplete="current-password" />
-        <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePw()">Show</button>
-      </div>
-    </div>
-
-    <label class="login-remember">
-      <input type="checkbox" id="rememberMe" checked />
-      Keep me signed in on this device
-    </label>
-
-    <button class="login-btn" onclick="doLogin()">Sign In</button>
-
-    <div class="login-foot">
-      Your token unlocks the hub and enables sync.<br>It is stored only on this device.
-    </div>
-  </div>
-</div>
-
-<!-- ===== MAIN APP (hidden until authenticated) ===== -->
-<div id="app">
 <div class="topwrap">
 <header>
   <!-- Uses the known-good transparent logo already hosted on the Click Track site.
-       If you later add 4Sight-4AI-White.png to THIS repo, you can switch src to it. -->
+       If the image fails, the red-dot wordmark fallback below is shown automatically. -->
   <img class="logo" src="https://4sightholdings.github.io/SS-Clicktrack-Reporting/4Sight-4AI-White.png" alt="4Sight"
        onerror="this.style.display='none';document.getElementById('wordmark').style.display='flex';" />
   <div class="wordmark" id="wordmark" style="display:none">4Sight<span class="dot"></span>&nbsp;<span class="ai">4AI</span></div>
@@ -188,13 +144,13 @@
   <div class="spacer"></div>
   <div class="toolbar">
     <div class="token-light off" id="tokenLight" onclick="manageToken()" title="Token status">
-      <span class="dot"></span>
+      <span class="dot"></span><span id="tokenLabel">Sync off</span>
     </div>
+    <button class="btn-ghost" onclick="syncNow()">Sync now</button>
     <button class="btn-ghost" onclick="exportData()">Export</button>
     <button class="btn-ghost" onclick="document.getElementById('importFile').click()">Import</button>
     <input type="file" id="importFile" accept=".json" onchange="importData(event)" />
     <button class="btn-primary" onclick="openDocModal()">＋ Add Document</button>
-    <button class="btn-soft-danger" onclick="signOut()">Sign out</button>
   </div>
 </header>
 </div>
@@ -203,7 +159,7 @@
   <aside>
     <h2>Entities / Folders</h2>
     <div id="folderList"></div>
-    <button class="btn-outline btn-sm" style="width:100%;margin-top:12px" onclick="openFolderModal()">＋ Add Folder</button>
+    <button class="btn-outline btn-sm" style="width:100%;margin-top:12px" onclick="openFolderModal()">＋ Add Top-Level Folder</button>
   </aside>
 
   <main>
@@ -228,6 +184,8 @@
         </select>
         <input class="search" id="searchBox" placeholder="Search documents…" oninput="render()" />
       </div>
+      <div id="crumb" class="crumb"></div>
+      <div id="subfolderBar"></div>
       <div id="tableWrap"></div>
     </div>
 
@@ -242,7 +200,7 @@
       <div id="contactsWrap"></div>
     </div>
 
-    <div class="footnote">Data is saved automatically in this browser. Use <b>Export</b> to back up or commit <code>data.json</code> to GitHub.</div>
+    <div class="footnote">Data auto-saves in this browser and, when a token is set, syncs to <code>data.json</code> on GitHub. Use <b>Export</b> for a manual backup.</div>
   </main>
 </div>
 
@@ -286,7 +244,7 @@
       <div class="field">
         <label>Attach Actual Document (optional)</label>
         <input type="file" id="docFile" style="display:block;padding:9px;border:1px dashed var(--line);width:100%;background:#fafafd;cursor:pointer;border-radius:12px" onchange="onFilePicked(event)" />
-        <div class="hint" id="fileHint">PDF, Word, image, etc. Stored in this browser. Max ~15 MB per file.</div>
+        <div class="hint" id="fileHint">PDF, Word, image, etc. Stored in this browser and uploaded to the repo (/files) when a token is set. Max ~15 MB per file.</div>
       </div>
       <div class="field">
         <label>Or Document Link (optional)</label>
@@ -306,13 +264,18 @@
 
 <!-- Folder Modal -->
 <div class="overlay" id="folderOverlay">
-  <div class="modal" style="max-width:420px">
+  <div class="modal" style="max-width:440px">
     <div class="mhead"><h3 id="folderModalTitle">Add Folder</h3></div>
     <div class="body">
-      <input type="hidden" id="folderOldName" />
+      <input type="hidden" id="folderEditId" />
       <div class="field">
         <label>Folder / Entity Name</label>
-        <input id="folderName" placeholder="e.g. 4Sight Africa (Pty) Ltd" />
+        <input id="folderName" placeholder="e.g. Agreements, Certificates, 2026…" />
+      </div>
+      <div class="field">
+        <label>Parent Folder</label>
+        <select id="folderParent"></select>
+        <div class="hint">Choose <b>— none (top level) —</b> for a main entity, or pick a parent to nest this folder inside it.</div>
       </div>
     </div>
     <div class="modal-foot">
@@ -351,10 +314,20 @@
     </div>
   </div>
 </div>
-</div><!-- /#app -->
 
 <script>
+/* =====================================================================
+   GITHUB SYNC CONFIG  —  EDIT THESE VALUES TO MATCH YOUR REPO
+   ===================================================================== */
+const GH = {
+  OWNER : "4sightholdings",
+  REPO  : "SS-Clicktrack-Reporting",
+  BRANCH: "main",
+  PATH  : "data.json"
+};
+
 const STORE_KEY = "4sight_legal_hub_v1";
+/* Seed folders are simple names; migrate() converts them into {id,name,parentId} objects. */
 const SEED = {
   folders: [
     "4Sight Africa (Pty) Ltd","4Sight OT Automation (Pty) Ltd","4Sight OT Optimisation (Pty) Ltd",
@@ -363,97 +336,128 @@ const SEED = {
   contacts: [],
   docs: []
 };
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+/* Migrate any older/flat data into the nested folder model.
+   - folders become objects: {id, name, parentId}
+   - docs gain folderId (from their old folder name)
+   - contacts gain entityId (from their old entity name) */
+function migrate(o){
+  if(!o.contacts) o.contacts=[];
+  if(!o.docs) o.docs=[];
+  if(!o.folders) o.folders=[];
+  const nameMap={};
+  o.folders = o.folders.map(f=>{
+    if(typeof f==="string"){ const id=uid(); nameMap[f]=id; return {id,name:f,parentId:null}; }
+    if(!f.id) f.id=uid();
+    if(f.parentId===undefined) f.parentId=null;
+    nameMap[f.name]=f.id;
+    return f;
+  });
+  o.docs.forEach(d=>{ if(!d.folderId && d.folder){ d.folderId=nameMap[d.folder]||""; } if(d.folderId===undefined) d.folderId=""; });
+  o.contacts.forEach(c=>{ if(!c.entityId && c.entity){ c.entityId=nameMap[c.entity]||""; } });
+  return o;
+}
+
 let db = load();
-let currentFolder = "__ALL__";
+let currentFolder = "__ALL__";       // "__ALL__" or a folder id
 let currentTab = "docs";
 let pendingFile = undefined;
+let remoteSha = null;
+let collapsed = new Set();            // folder ids that are collapsed in the tree
 
-function load(){ try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const o=JSON.parse(raw); if(!o.contacts) o.contacts=[]; return o; } }catch(e){} return JSON.parse(JSON.stringify(SEED)); }
+function load(){ try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ return migrate(JSON.parse(raw)); } }catch(e){} return migrate(JSON.parse(JSON.stringify(SEED))); }
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
 
-/* =========================================================
-   AUTH — the login password IS the token
-   ========================================================= */
-const TOKEN_KEY="4sight_legal_hub_token";          // persistent (Keep me signed in)
-const SESSION_KEY="4sight_legal_hub_token_session"; // per-session (this tab only)
-const MIN_TOKEN_LEN=6; // minimum characters accepted as a valid token
+/* =====================================================================
+   FOLDER TREE HELPERS
+   ===================================================================== */
+function folderById(id){ return db.folders.find(f=>f.id===id); }
+function folderName(id){ const f=folderById(id); return f?f.name:""; }
+function childrenOf(pid){ return db.folders.filter(f=>(f.parentId||null)===(pid||null)).sort((a,b)=>a.name.localeCompare(b.name)); }
+function descendantIds(id){ let out=[]; childrenOf(id).forEach(ch=>{ out.push(ch.id); out=out.concat(descendantIds(ch.id)); }); return out; }
+function docCountDeep(id){ const ids=[id,...descendantIds(id)]; return db.docs.filter(d=>ids.includes(d.folderId)).length; }
+function folderPath(id){ const names=[]; let f=folderById(id); while(f){ names.unshift(f.name); f=f.parentId?folderById(f.parentId):null; } return names; }
 
-/* Returns the active token from either persistent or session storage */
-function activeToken(){
-  return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(SESSION_KEY) || "";
-}
-function isAuthed(){ return !!activeToken(); }
-
-function togglePw(){
-  const inp=document.getElementById('loginToken');
-  const btn=document.getElementById('pwToggle');
-  if(inp.type==='password'){ inp.type='text'; btn.textContent='Hide'; }
-  else{ inp.type='password'; btn.textContent='Show'; }
-}
-
-function doLogin(){
-  const inp=document.getElementById('loginToken');
-  const err=document.getElementById('loginError');
-  const token=(inp.value||"").trim();
-  if(token.length < MIN_TOKEN_LEN){
-    err.textContent = token ? "That token looks too short. Please check and try again."
-                            : "Please enter your access token.";
-    err.classList.add('show');
-    inp.focus();
-    return;
-  }
-  err.classList.remove('show');
-  // Store the token — persistent if "keep me signed in", otherwise session only.
-  if(document.getElementById('rememberMe').checked){
-    localStorage.setItem(TOKEN_KEY, token);
-    sessionStorage.removeItem(SESSION_KEY);
-  } else {
-    sessionStorage.setItem(SESSION_KEY, token);
-    localStorage.removeItem(TOKEN_KEY);
-  }
-  unlockApp();
-}
-
-function unlockApp(){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('app').style.display='block';
-  renderTokenLight();
-  render();
-}
-
-function signOut(){
-  if(!confirm("Sign out of the Legal Documents Hub?\n\nYou'll need your access token to sign back in.")) return;
-  localStorage.removeItem(TOKEN_KEY);
-  sessionStorage.removeItem(SESSION_KEY);
-  document.getElementById('app').style.display='none';
-  const ls=document.getElementById('loginScreen');
-  ls.style.display='flex';
-  const inp=document.getElementById('loginToken');
-  inp.value=''; inp.type='password';
-  document.getElementById('pwToggle').textContent='Show';
-  document.getElementById('loginError').classList.remove('show');
-  inp.focus();
-}
-
-/* ---- Token status light (now reflects the login token) ---- */
-function renderTokenLight(){
-  const el=document.getElementById('tokenLight');
-  if(isAuthed()){ el.classList.remove('off'); el.title="Token active — click to update or sign out"; }
-  else{ el.classList.add('off'); el.title="No token set"; }
-}
+/* =====================================================================
+   TOKEN + GITHUB SYNC
+   ===================================================================== */
+const TOKEN_KEY="4sight_legal_hub_token";
+function getToken(){ return (localStorage.getItem(TOKEN_KEY)||"").trim(); }
+function setLight(state,label){ const el=document.getElementById('tokenLight'); el.classList.remove('off','syncing','err'); if(state) el.classList.add(state); document.getElementById('tokenLabel').textContent=label; }
+function renderTokenLight(){ if(getToken()){ setLight("","Sync on"); document.getElementById('tokenLight').title="Token connected — click to update or remove"; } else { setLight("off","Sync off"); document.getElementById('tokenLight').title="No token set — click to add a GitHub token"; } }
 function manageToken(){
-  if(confirm("You're signed in with your token.\n\nOK = update the token   |   Cancel = sign out")){
-    const t=prompt("Enter a new token:","");
-    if(t!==null && t.trim().length>=MIN_TOKEN_LEN){
-      if(localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY,t.trim());
-      else sessionStorage.setItem(SESSION_KEY,t.trim());
-      renderTokenLight();
-    } else if(t!==null){
-      alert("That token looks too short — no change made.");
-    }
+  const cur=getToken();
+  if(cur){
+    if(confirm("A token is currently saved.\n\nOK = update it   |   Cancel = remove it")){
+      const t=prompt("Enter GitHub token (fine-grained, Contents: Read and write on this repo):",""); if(t!==null && t.trim()){ localStorage.setItem(TOKEN_KEY,t.trim()); renderTokenLight(); syncNow(); }
+    } else { localStorage.removeItem(TOKEN_KEY); }
   } else {
-    signOut();
+    const t=prompt("Enter a GitHub token to enable sync\n(fine-grained PAT, Contents: Read and write on this repo):",""); if(t && t.trim()){ localStorage.setItem(TOKEN_KEY,t.trim()); renderTokenLight(); syncNow(); return; }
   }
+  renderTokenLight();
+}
+function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
+const GH_API = ()=>`https://api.github.com/repos/${GH.OWNER}/${GH.REPO}/contents/${encodeURIComponent(GH.PATH)}`;
+async function ghGet(){
+  const token=getToken();
+  const res=await fetch(`${GH_API()}?ref=${GH.BRANCH}&t=${Date.now()}`,{ headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" } });
+  if(res.status===404){ remoteSha=null; return null; }
+  if(!res.ok) throw new Error("GET failed ("+res.status+")");
+  const j=await res.json(); remoteSha=j.sha; return j;
+}
+async function ghPut(){
+  const token=getToken(); if(!token) throw new Error("No token");
+  try{ await ghGet(); }catch(e){}
+  const body={ message:"Update legal hub data.json — "+new Date().toISOString(), content:b64encode(JSON.stringify(db,null,2)), branch:GH.BRANCH };
+  if(remoteSha) body.sha=remoteSha;
+  const res=await fetch(GH_API(),{ method:"PUT", headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" }, body:JSON.stringify(body) });
+  if(!res.ok){ const t=await res.text(); throw new Error("PUT failed ("+res.status+"): "+t.slice(0,140)); }
+  const j=await res.json(); remoteSha=j.content&&j.content.sha?j.content.sha:remoteSha; return true;
+}
+/* Upload (or replace) a binary attachment file in the repo under /files/.
+   `path` is repo-relative (e.g. files/abc123-contract.pdf).
+   `b64content` is RAW base64 (no data: prefix). Returns {path, download_url}. */
+async function ghPutFile(path, b64content){
+  const token=getToken(); if(!token) throw new Error("No token");
+  const api=`https://api.github.com/repos/${GH.OWNER}/${GH.REPO}/contents/${path.split('/').map(encodeURIComponent).join('/')}`;
+  // get existing sha (if replacing)
+  let sha=null;
+  try{
+    const g=await fetch(`${api}?ref=${GH.BRANCH}&t=${Date.now()}`,{headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }});
+    if(g.ok){ const gj=await g.json(); sha=gj.sha; }
+  }catch(e){}
+  const body={ message:"Upload attachment "+path+" — "+new Date().toISOString(), content:b64content, branch:GH.BRANCH };
+  if(sha) body.sha=sha;
+  const res=await fetch(api,{ method:"PUT", headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" }, body:JSON.stringify(body) });
+  if(!res.ok){ const t=await res.text(); throw new Error("File upload failed ("+res.status+"): "+t.slice(0,140)); }
+  const j=await res.json();
+  return { path, download_url:(j.content&&j.content.download_url)||"" };
+}
+
+/* Delete an attachment file from the repo (best-effort). */
+async function ghDeleteFile(path){
+  const token=getToken(); if(!token) return;
+  const api=`https://api.github.com/repos/${GH.OWNER}/${GH.REPO}/contents/${path.split('/').map(encodeURIComponent).join('/')}`;
+  try{
+    const g=await fetch(`${api}?ref=${GH.BRANCH}&t=${Date.now()}`,{headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }});
+    if(!g.ok) return; const gj=await g.json();
+    await fetch(api,{ method:"DELETE", headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" }, body:JSON.stringify({ message:"Delete attachment "+path, sha:gj.sha, branch:GH.BRANCH }) });
+  }catch(e){ console.warn("Could not delete remote file",path,e); }
+}
+
+async function syncNow(){
+  if(!getToken()){ manageToken(); return; }
+  setLight("syncing","Syncing…");
+  try{ await ghPut(); setLight("","Synced ✓"); setTimeout(renderTokenLight,2500); }
+  catch(err){ setLight("err","Sync failed"); console.error(err); alert("GitHub sync failed:\n\n"+err.message+"\n\nCheck repo owner/name/branch in the config, token permissions (Contents: Read & write), and that the token hasn't expired."); setTimeout(renderTokenLight,3500); }
+}
+async function autoSync(){
+  if(!getToken()) return;
+  setLight("syncing","Syncing…");
+  try{ await ghPut(); setLight("","Synced ✓"); setTimeout(renderTokenLight,2000); }
+  catch(err){ setLight("err","Sync failed"); console.error(err); setTimeout(renderTokenLight,3000); }
 }
 
 /* File store (IndexedDB) */
@@ -463,9 +467,16 @@ async function saveFile(id,f){const d=await idb();return new Promise((res,rej)=>
 async function getFile(id){const d=await idb();return new Promise((res)=>{const t=d.transaction("files","readonly");const r=t.objectStore("files").get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);});}
 async function delFile(id){const d=await idb();return new Promise((res)=>{const t=d.transaction("files","readwrite");t.objectStore("files").delete(id);t.oncomplete=res;t.onerror=res;});}
 function onFilePicked(ev){const f=ev.target.files[0];if(!f){pendingFile=undefined;return;}if(f.size>15*1024*1024){alert("File larger than 15 MB. Use the Document Link field for very large files.");ev.target.value="";pendingFile=undefined;return;}const r=new FileReader();r.onload=e=>{pendingFile={name:f.name,type:f.type,dataUrl:e.target.result};document.getElementById('fileHint').textContent="✔ Attached: "+f.name;};r.readAsDataURL(f);}
-async function openStoredFile(id){const f=await getFile(id);if(!f){alert("File not found in this browser.");return;}const a=document.createElement('a');a.href=f.dataUrl;a.download=f.name;a.click();}
+async function openStoredFile(id){
+  const doc=db.docs.find(x=>x.id===id);
+  // 1) try the local browser copy first (instant, works offline)
+  const f=await getFile(id);
+  if(f){ const a=document.createElement('a'); a.href=f.dataUrl; a.download=f.name; a.click(); return; }
+  // 2) otherwise fall back to the copy stored in the GitHub repo
+  if(doc&&doc.fileUrl){ window.open(doc.fileUrl,'_blank'); return; }
+  alert("File not found locally. If it was uploaded on another machine, set a token and click Sync now, or ensure the repo is reachable.");
+}
 
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function daysUntil(s){ if(!s) return null; const t=new Date();t.setHours(0,0,0,0);const d=new Date(s);d.setHours(0,0,0,0);return Math.round((d-t)/86400000); }
 function statusOf(s){ const d=daysUntil(s); if(d===null) return "none"; if(d<0) return "exp"; if(d<=30) return "soon"; return "ok"; }
@@ -481,14 +492,15 @@ function draftEmail(docId){
   const dl=daysUntil(d.expiry);
   const status=dl===null?"":(dl<0?`expired ${Math.abs(dl)} day(s) ago`:`due to expire in ${dl} day(s)`);
   const exp=d.expiry?new Date(d.expiry).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):"—";
-  const subject=`Legal Document Reminder: ${d.name} (${d.folder})`;
+  const ent=folderPath(d.folderId).join(" / ")||"—";
+  const subject=`Legal Document Reminder: ${d.name} (${ent})`;
   const body=
 `Hi ${c.name.split(' ')[0]||''},
 
 This is a reminder regarding the following legal document that is ${status}:
 
 Document: ${d.name}
-Entity: ${d.folder}
+Entity: ${ent}
 Type: ${d.type||'—'}
 Expiry Date: ${exp}
 ${d.url?`Link: ${d.url}\n`:''}
@@ -509,9 +521,32 @@ function switchTab(t){
 }
 
 function render(){ renderFolders(); renderStats(); renderTable(); }
-function renderFolders(){ const el=document.getElementById('folderList'); let h=folderRow("__ALL__","📁 All Documents",db.docs.length); db.folders.forEach(f=>{h+=folderRow(f,"🗂 "+f,db.docs.filter(d=>d.folder===f).length);}); el.innerHTML=h; }
-function folderRow(k,l,c){ const a=currentFolder===k?" active":""; return `<div class="folder${a}" onclick="selectFolder('${encodeURIComponent(k)}')"><span class="fname">${esc(l)}</span><span class="count">${c}</span></div>`; }
-function selectFolder(k){ currentFolder=decodeURIComponent(k); document.getElementById('searchBox').value=''; if(currentTab!=='docs') switchTab('docs'); render(); }
+
+/* ---- Sidebar folder tree ---- */
+function renderFolders(){
+  const el=document.getElementById('folderList');
+  let h=`<div class="folder${currentFolder==='__ALL__'?' active':''}" style="padding-left:10px" onclick="selectFolder('__ALL__')"><span class="chev-sp"></span><span class="fname">📁 All Documents</span><span class="count">${db.docs.length}</span></div>`;
+  h+=renderTree(null,0);
+  el.innerHTML=h;
+}
+function renderTree(parentId,depth){
+  let h="";
+  childrenOf(parentId).forEach(f=>{
+    const kids=childrenOf(f.id);
+    const hasKids=kids.length>0;
+    const isCol=collapsed.has(f.id);
+    const active=currentFolder===f.id?" active":"";
+    const pad=10+depth*15;
+    const chev=hasKids?`<span class="chev" onclick="toggleCollapse(event,'${f.id}')">${isCol?'▸':'▾'}</span>`:`<span class="chev-sp"></span>`;
+    h+=`<div class="folder${active}" style="padding-left:${pad}px" onclick="selectFolder('${f.id}')">${chev}<span class="fname">🗂 ${esc(f.name)}</span><span class="addsub" title="Add subfolder" onclick="addSubfolder(event,'${f.id}')">＋</span><span class="count">${docCountDeep(f.id)}</span></div>`;
+    if(hasKids && !isCol) h+=renderTree(f.id,depth+1);
+  });
+  return h;
+}
+function toggleCollapse(e,id){ e.stopPropagation(); if(collapsed.has(id)) collapsed.delete(id); else collapsed.add(id); renderFolders(); }
+function addSubfolder(e,id){ e.stopPropagation(); openFolderModal(null,id); }
+function selectFolder(id){ currentFolder=id; document.getElementById('searchBox').value=''; if(currentTab!=='docs') switchTab('docs'); render(); }
+
 function renderStats(){ const docs=db.docs; let exp=0,soon=0,valid=0; docs.forEach(d=>{const s=statusOf(d.expiry); if(s==='exp')exp++; else if(s==='soon')soon++; else if(s==='ok')valid++; }); document.getElementById('stats').innerHTML=`
   <div class="stat"><div class="num">${docs.length}</div><div class="lbl">Total Documents</div></div>
   <div class="stat soon"><div class="num">${soon}</div><div class="lbl">Expiring ≤ 30 days</div></div>
@@ -519,26 +554,52 @@ function renderStats(){ const docs=db.docs; let exp=0,soon=0,valid=0; docs.forEa
   <div class="stat ok"><div class="num">${valid}</div><div class="lbl">Valid</div></div>`; }
 
 function renderTable(){
-  const name=currentFolder==="__ALL__"?"All Documents":currentFolder;
-  document.getElementById('currentFolderName').textContent=name;
+  const isAll=currentFolder==="__ALL__";
+  const title=isAll?"All Documents":folderName(currentFolder);
+  document.getElementById('currentFolderName').textContent=title;
+
+  /* breadcrumb */
+  const crumbEl=document.getElementById('crumb');
+  crumbEl.innerHTML = isAll ? "" : folderPath(currentFolder).map((n,i,a)=> i===a.length-1?`<b>${esc(n)}</b>`:esc(n)).join(" / ");
+
+  /* folder tools */
   const tools=document.getElementById('folderTools');
-  tools.innerHTML = currentFolder==="__ALL__"?"":`<button class="btn-outline btn-sm" onclick="openFolderModal('${encodeURIComponent(currentFolder)}')">Rename</button> <button class="btn-soft-danger btn-sm" onclick="deleteFolder('${encodeURIComponent(currentFolder)}')">Delete Folder</button>`;
+  tools.innerHTML = isAll ? "" :
+    `<button class="btn-outline btn-sm" onclick="openFolderModal(null,'${currentFolder}')">＋ Subfolder</button> `+
+    `<button class="btn-outline btn-sm" onclick="openFolderModal('${currentFolder}')">Rename / Move</button> `+
+    `<button class="btn-soft-danger btn-sm" onclick="deleteFolder('${currentFolder}')">Delete Folder</button>`;
+
+  /* subfolder shortcut chips */
+  const subBar=document.getElementById('subfolderBar');
+  const subs=isAll?[]:childrenOf(currentFolder);
+  if(subs.length){
+    subBar.className="subfolder-bar";
+    subBar.innerHTML=`<div class="lbl">Subfolders</div>`+subs.map(s=>`<span class="subfolder-chip" onclick="selectFolder('${s.id}')">🗂 ${esc(s.name)} <span class="c">${docCountDeep(s.id)}</span></span>`).join('');
+  } else { subBar.className=""; subBar.innerHTML=""; }
+
   const q=(document.getElementById('searchBox').value||"").toLowerCase();
   const sf=document.getElementById('statusFilter').value;
-  let rows=db.docs.filter(d=>currentFolder==="__ALL__"||d.folder===currentFolder);
+
+  /* include documents in this folder AND all its subfolders */
+  const scopeIds = isAll ? null : [currentFolder, ...descendantIds(currentFolder)];
+  const showFolderCol = isAll || (scopeIds && scopeIds.length>1);
+
+  let rows=db.docs.filter(d=> !scopeIds || scopeIds.includes(d.folderId));
   if(sf!=="all") rows=rows.filter(d=>statusOf(d.expiry)===sf);
-  if(q) rows=rows.filter(d=>{const c=d.ownerId?contactById(d.ownerId):null;return (d.name+" "+d.type+" "+d.notes+" "+d.folder+" "+(c?c.name+" "+c.email:"")).toLowerCase().includes(q);});
+  if(q) rows=rows.filter(d=>{const c=d.ownerId?contactById(d.ownerId):null;return (d.name+" "+d.type+" "+d.notes+" "+folderPath(d.folderId).join(" ")+" "+(c?c.name+" "+c.email:"")).toLowerCase().includes(q);});
   rows.sort((a,b)=>{const da=daysUntil(a.expiry),dbb=daysUntil(b.expiry);if(da===null&&dbb===null)return a.name.localeCompare(b.name);if(da===null)return 1;if(dbb===null)return -1;return da-dbb;});
+
   const wrap=document.getElementById('tableWrap');
   if(rows.length===0){ wrap.innerHTML=`<div class="card-table"><div class="empty">No documents here yet.<br><br><button class="btn-primary" onclick="openDocModal()">＋ Add your first document</button></div></div>`; return; }
-  let h=`<div class="card-table"><table><thead><tr><th>Document</th><th>Type</th>${currentFolder==="__ALL__"?"<th>Entity</th>":""}<th>Review</th><th>Expiry / Reminder</th><th>Owner</th><th>Actions</th></tr></thead><tbody>`;
+  let h=`<div class="card-table"><table><thead><tr><th>Document</th><th>Type</th>${showFolderCol?"<th>Folder</th>":""}<th>Review</th><th>Expiry / Reminder</th><th>Owner</th><th>Actions</th></tr></thead><tbody>`;
   rows.forEach(d=>{
     const nameCell=d.url?`<a class="doclink" href="${esc(d.url)}" target="_blank">${esc(d.name)}</a>`:esc(d.name);
     const fileCell=d.fileName?`<div class="hint">📎 <a class="doclink" href="javascript:void(0)" onclick="openStoredFile('${d.id}')">${esc(d.fileName)}</a></div>`:"";
     const c=d.ownerId?contactById(d.ownerId):null;
     const ownerCell=c?`<div class="owner-name">${esc(c.name)}</div><div class="owner-mail">${esc(c.email)}</div>`:`<span class="hint">— none —</span>`;
     const mailBtn=(c&&c.email)?`<button class="btn-mail btn-sm" onclick="draftEmail('${d.id}')">📧 Email Owner</button>`:"";
-    h+=`<tr><td>${nameCell}${fileCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td><td>${esc(d.type)||'—'}</td>${currentFolder==="__ALL__"?`<td>${esc(d.folder)}</td>`:""}<td>${fmtDate(d.review)}</td><td>${expiryPill(d.expiry)}</td><td>${ownerCell}</td><td><div class="row-actions">${mailBtn}<button class="btn-outline btn-sm" onclick="openDocModal('${d.id}')">Edit</button><button class="btn-soft-danger btn-sm" onclick="deleteDoc('${d.id}')">Del</button></div></td></tr>`;
+    const folderCell=showFolderCol?`<td><span class="hint">${esc(folderPath(d.folderId).join(" / ")||'—')}</span></td>`:"";
+    h+=`<tr><td>${nameCell}${fileCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td><td>${esc(d.type)||'—'}</td>${folderCell}<td>${fmtDate(d.review)}</td><td>${expiryPill(d.expiry)}</td><td>${ownerCell}</td><td><div class="row-actions">${mailBtn}<button class="btn-outline btn-sm" onclick="openDocModal('${d.id}')">Edit</button><button class="btn-soft-danger btn-sm" onclick="deleteDoc('${d.id}')">Del</button></div></td></tr>`;
   });
   h+=`</tbody></table></div>`; wrap.innerHTML=h;
 }
@@ -547,16 +608,32 @@ function renderTable(){
 function renderContacts(){
   const q=(document.getElementById('contactSearch').value||"").toLowerCase();
   let rows=db.contacts.slice();
-  if(q) rows=rows.filter(c=>(c.name+" "+c.email+" "+(c.title||"")+" "+(c.entity||"")).toLowerCase().includes(q));
+  if(q) rows=rows.filter(c=>(c.name+" "+c.email+" "+(c.title||"")+" "+folderName(c.entityId)).toLowerCase().includes(q));
   rows.sort((a,b)=>a.name.localeCompare(b.name));
   const wrap=document.getElementById('contactsWrap');
   if(rows.length===0){ wrap.innerHTML=`<div class="card-table"><div class="empty">No contacts yet.<br><br><button class="btn-primary" onclick="openContactModal()">＋ Add your first contact</button></div></div>`; return; }
   let h=`<div class="card-table"><table><thead><tr><th>Name</th><th>Email</th><th>Job Title</th><th>Entity</th><th>Docs</th><th>Actions</th></tr></thead><tbody>`;
   rows.forEach(c=>{
     const cnt=db.docs.filter(d=>d.ownerId===c.id).length;
-    h+=`<tr><td class="owner-name">${esc(c.name)}</td><td><a class="maillink" href="mailto:${esc(c.email)}">${esc(c.email)}</a></td><td>${esc(c.title)||'—'}</td><td>${esc(c.entity)||'—'}</td><td>${cnt}</td><td><div class="row-actions"><button class="btn-outline btn-sm" onclick="openContactModal('${c.id}')">Edit</button><button class="btn-soft-danger btn-sm" onclick="deleteContact('${c.id}')">Del</button></div></td></tr>`;
+    h+=`<tr><td class="owner-name">${esc(c.name)}</td><td><a class="maillink" href="mailto:${esc(c.email)}">${esc(c.email)}</a></td><td>${esc(c.title)||'—'}</td><td>${esc(folderPath(c.entityId).join(" / "))||'—'}</td><td>${cnt}</td><td><div class="row-actions"><button class="btn-outline btn-sm" onclick="openContactModal('${c.id}')">Edit</button><button class="btn-soft-danger btn-sm" onclick="deleteContact('${c.id}')">Del</button></div></td></tr>`;
   });
   h+=`</tbody></table></div>`; wrap.innerHTML=h;
+}
+
+/* ---- Hierarchical <select> builder ---- */
+function fillFolderSelect(sel,selectedId,opts){
+  opts=opts||{};
+  let html = opts.topOption ? `<option value="">${opts.topOption}</option>` : "";
+  (function walk(pid,depth){
+    childrenOf(pid).forEach(f=>{
+      if(opts.excludeId && (f.id===opts.excludeId || descendantIds(opts.excludeId).includes(f.id))) return;
+      const indent = depth?("&nbsp;&nbsp;".repeat(depth)+"↳ "):"";
+      html+=`<option value="${f.id}">${indent}${esc(f.name)}</option>`;
+      walk(f.id,depth+1);
+    });
+  })(null,0);
+  sel.innerHTML=html;
+  if(selectedId!==undefined && selectedId!==null) sel.value=selectedId;
 }
 
 /* ---- Document CRUD ---- */
@@ -565,43 +642,96 @@ function fillOwnerSelect(sel,selectedId){
   if(selectedId) sel.value=selectedId;
 }
 function openDocModal(id){
-  const sel=document.getElementById('docFolder'); sel.innerHTML=db.folders.map(f=>`<option>${esc(f)}</option>`).join('');
+  const sel=document.getElementById('docFolder');
   const own=document.getElementById('docOwner');
-  if(id){ const d=db.docs.find(x=>x.id===id); document.getElementById('docModalTitle').textContent="Edit Document"; document.getElementById('docId').value=d.id; sel.value=d.folder; document.getElementById('docName').value=d.name; document.getElementById('docType').value=d.type||''; document.getElementById('docReview').value=d.review||''; document.getElementById('docExpiry').value=d.expiry||''; document.getElementById('docUrl').value=d.url||''; document.getElementById('docNotes').value=d.notes||''; fillOwnerSelect(own,d.ownerId||""); }
-  else{ document.getElementById('docModalTitle').textContent="Add Document"; ['docId','docName','docType','docReview','docExpiry','docUrl','docNotes'].forEach(i=>document.getElementById(i).value=''); if(currentFolder!=="__ALL__") sel.value=currentFolder; fillOwnerSelect(own,""); }
+  if(id){ const d=db.docs.find(x=>x.id===id); document.getElementById('docModalTitle').textContent="Edit Document"; document.getElementById('docId').value=d.id; fillFolderSelect(sel,d.folderId); document.getElementById('docName').value=d.name; document.getElementById('docType').value=d.type||''; document.getElementById('docReview').value=d.review||''; document.getElementById('docExpiry').value=d.expiry||''; document.getElementById('docUrl').value=d.url||''; document.getElementById('docNotes').value=d.notes||''; fillOwnerSelect(own,d.ownerId||""); }
+  else{ document.getElementById('docModalTitle').textContent="Add Document"; ['docId','docName','docType','docReview','docExpiry','docUrl','docNotes'].forEach(i=>document.getElementById(i).value=''); fillFolderSelect(sel, currentFolder!=="__ALL__"?currentFolder:(db.folders[0]?db.folders[0].id:"")); fillOwnerSelect(own,""); }
   pendingFile=undefined; document.getElementById('docFile').value="";
   const ex=id?db.docs.find(x=>x.id===id):null;
-  document.getElementById('fileHint').textContent=(ex&&ex.fileName)?"✔ Currently attached: "+ex.fileName+" (choose a new file to replace)":"PDF, Word, image, etc. Stored in this browser. Max ~15 MB per file.";
+  document.getElementById('fileHint').textContent=(ex&&ex.fileName)?"✔ Currently attached: "+ex.fileName+" (choose a new file to replace)":"PDF, Word, image, etc. Stored in this browser and uploaded to the repo (/files) when a token is set. Max ~15 MB per file.";
   document.getElementById('docOverlay').classList.add('show');
 }
 function closeDocModal(){ document.getElementById('docOverlay').classList.remove('show'); }
 async function saveDoc(){
   const name=document.getElementById('docName').value.trim(); if(!name){ alert("Please enter a document name."); return; }
+  const folderId=document.getElementById('docFolder').value; if(!folderId){ alert("Please create a folder first, then choose it here."); return; }
   const ex=db.docs.find(x=>x.id===document.getElementById('docId').value);
-  const rec={ id:document.getElementById('docId').value||uid(), folder:document.getElementById('docFolder').value, name, type:document.getElementById('docType').value.trim(), ownerId:document.getElementById('docOwner').value, review:document.getElementById('docReview').value, expiry:document.getElementById('docExpiry').value, url:document.getElementById('docUrl').value.trim(), notes:document.getElementById('docNotes').value.trim(), fileName:(ex&&ex.fileName)||"" };
-  if(pendingFile){ await saveFile(rec.id,pendingFile); rec.fileName=pendingFile.name; }
+  const rec={ id:document.getElementById('docId').value||uid(), folderId, name, type:document.getElementById('docType').value.trim(), ownerId:document.getElementById('docOwner').value, review:document.getElementById('docReview').value, expiry:document.getElementById('docExpiry').value, url:document.getElementById('docUrl').value.trim(), notes:document.getElementById('docNotes').value.trim(), fileName:(ex&&ex.fileName)||"", filePath:(ex&&ex.filePath)||"", fileUrl:(ex&&ex.fileUrl)||"" };
+  if(pendingFile){
+    // always keep a local copy for instant/offline access
+    await saveFile(rec.id,pendingFile); rec.fileName=pendingFile.name;
+    // and, if a token is set, push the actual file into the repo under /files/
+    if(getToken()){
+      try{
+        setLight("syncing","Uploading file…");
+        const b64=(pendingFile.dataUrl.split(',')[1])||"";
+        const safe=pendingFile.name.replace(/[^A-Za-z0-9._-]/g,"_");
+        const path=`files/${rec.id}-${safe}`;
+        const up=await ghPutFile(path,b64);
+        rec.filePath=up.path; rec.fileUrl=up.download_url;
+      }catch(err){ console.error(err); alert("The document details will be saved, but the attached file could not be uploaded to GitHub:\n\n"+err.message+"\n\n(It is still stored in this browser.)"); }
+    }
+  }
   const i=db.docs.findIndex(x=>x.id===rec.id); if(i>=0) db.docs[i]=rec; else db.docs.push(rec);
-  save(); closeDocModal(); render();
+  save(); closeDocModal(); render(); autoSync();
 }
-async function deleteDoc(id){ if(!confirm("Delete this document?")) return; await delFile(id); db.docs=db.docs.filter(x=>x.id!==id); save(); render(); }
+async function deleteDoc(id){ if(!confirm("Delete this document?")) return; const d=db.docs.find(x=>x.id===id); await delFile(id); if(d&&d.filePath&&getToken()){ await ghDeleteFile(d.filePath); } db.docs=db.docs.filter(x=>x.id!==id); save(); render(); autoSync(); }
 
-/* ---- Folder CRUD ---- */
-function openFolderModal(enc){ const old=enc?decodeURIComponent(enc):""; document.getElementById('folderModalTitle').textContent=old?"Rename Folder":"Add Folder"; document.getElementById('folderOldName').value=old; document.getElementById('folderName').value=old; document.getElementById('folderOverlay').classList.add('show'); }
+/* ---- Folder CRUD (nested) ---- */
+function openFolderModal(editId, parentId){
+  const parentSel=document.getElementById('folderParent');
+  if(editId){
+    const f=folderById(editId);
+    document.getElementById('folderModalTitle').textContent="Rename / Move Folder";
+    document.getElementById('folderEditId').value=editId;
+    document.getElementById('folderName').value=f.name;
+    fillFolderSelect(parentSel, f.parentId||"", {topOption:"— none (top level) —", excludeId:editId});
+  } else {
+    document.getElementById('folderModalTitle').textContent = parentId?"Add Subfolder":"Add Folder";
+    document.getElementById('folderEditId').value="";
+    document.getElementById('folderName').value="";
+    fillFolderSelect(parentSel, parentId||"", {topOption:"— none (top level) —"});
+  }
+  document.getElementById('folderOverlay').classList.add('show');
+}
 function closeFolderModal(){ document.getElementById('folderOverlay').classList.remove('show'); }
 function saveFolder(){
-  const name=document.getElementById('folderName').value.trim(); const old=document.getElementById('folderOldName').value;
+  const name=document.getElementById('folderName').value.trim();
+  const editId=document.getElementById('folderEditId').value;
+  const parentId=document.getElementById('folderParent').value||null;
   if(!name){ alert("Please enter a folder name."); return; }
-  if(old){ if(name!==old&&db.folders.includes(name)){alert("A folder with that name already exists.");return;} const idx=db.folders.indexOf(old); db.folders[idx]=name; db.docs.forEach(d=>{if(d.folder===old)d.folder=name;}); if(currentFolder===old)currentFolder=name; }
-  else{ if(db.folders.includes(name)){alert("A folder with that name already exists.");return;} db.folders.push(name); }
-  save(); closeFolderModal(); render();
+  const dup=db.folders.some(f=>(f.parentId||null)===(parentId||null) && f.name.toLowerCase()===name.toLowerCase() && f.id!==editId);
+  if(dup){ alert("A folder with that name already exists in the same location."); return; }
+  if(editId){
+    if(parentId===editId || descendantIds(editId).includes(parentId)){ alert("You can't move a folder into itself or one of its own subfolders."); return; }
+    const f=folderById(editId); f.name=name; f.parentId=parentId;
+  } else {
+    db.folders.push({id:uid(),name,parentId});
+  }
+  save(); closeFolderModal(); render(); autoSync();
 }
-function deleteFolder(enc){ const f=decodeURIComponent(enc); const n=db.docs.filter(d=>d.folder===f).length; if(!confirm(`Delete folder "${f}"?`+(n?`\n\nThis will also delete ${n} document(s) inside it.`:""))) return; db.folders=db.folders.filter(x=>x!==f); db.docs=db.docs.filter(d=>d.folder!==f); if(currentFolder===f)currentFolder="__ALL__"; save(); render(); }
+async function deleteFolder(id){
+  const f=folderById(id); if(!f) return;
+  const ids=[id,...descendantIds(id)];
+  const nsub=ids.length-1;
+  const ndocs=db.docs.filter(d=>ids.includes(d.folderId)).length;
+  let msg=`Delete folder "${f.name}"?`;
+  if(nsub) msg+=`\n\nThis will also delete ${nsub} subfolder(s).`;
+  if(ndocs) msg+=`\n\n${ndocs} document(s) inside will be permanently deleted.`;
+  if(!confirm(msg)) return;
+  for(const d of db.docs.filter(d=>ids.includes(d.folderId))){ await delFile(d.id); if(d.filePath&&getToken()){ await ghDeleteFile(d.filePath); } }
+  db.folders=db.folders.filter(x=>!ids.includes(x.id));
+  db.docs=db.docs.filter(d=>!ids.includes(d.folderId));
+  db.contacts.forEach(c=>{ if(ids.includes(c.entityId)) c.entityId=""; });
+  if(ids.includes(currentFolder)) currentFolder="__ALL__";
+  save(); render(); autoSync();
+}
 
 /* ---- Contact CRUD ---- */
 function openContactModal(id){
   const ent=document.getElementById('contactEntity');
-  ent.innerHTML=`<option value="">— none —</option>`+db.folders.map(f=>`<option>${esc(f)}</option>`).join('');
-  if(id){ const c=contactById(id); document.getElementById('contactModalTitle').textContent="Edit Contact"; document.getElementById('contactId').value=c.id; document.getElementById('contactName').value=c.name; document.getElementById('contactEmail').value=c.email; document.getElementById('contactTitle').value=c.title||''; ent.value=c.entity||''; }
+  fillFolderSelect(ent, "", {topOption:"— none —"});
+  if(id){ const c=contactById(id); document.getElementById('contactModalTitle').textContent="Edit Contact"; document.getElementById('contactId').value=c.id; document.getElementById('contactName').value=c.name; document.getElementById('contactEmail').value=c.email; document.getElementById('contactTitle').value=c.title||''; ent.value=c.entityId||''; }
   else{ document.getElementById('contactModalTitle').textContent="Add Contact"; ['contactId','contactName','contactEmail','contactTitle'].forEach(i=>document.getElementById(i).value=''); ent.value=''; }
   document.getElementById('contactOverlay').classList.add('show');
 }
@@ -610,31 +740,30 @@ function saveContact(){
   const name=document.getElementById('contactName').value.trim(); const email=document.getElementById('contactEmail').value.trim();
   if(!name){ alert("Please enter a name."); return; }
   if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ alert("Please enter a valid email address."); return; }
-  const rec={ id:document.getElementById('contactId').value||uid(), name, email, title:document.getElementById('contactTitle').value.trim(), entity:document.getElementById('contactEntity').value };
+  const rec={ id:document.getElementById('contactId').value||uid(), name, email, title:document.getElementById('contactTitle').value.trim(), entityId:document.getElementById('contactEntity').value };
   const i=db.contacts.findIndex(x=>x.id===rec.id); if(i>=0) db.contacts[i]=rec; else db.contacts.push(rec);
-  save(); closeContactModal(); renderContacts(); render();
+  save(); closeContactModal(); renderContacts(); render(); autoSync();
 }
 function deleteContact(id){
   const cnt=db.docs.filter(d=>d.ownerId===id).length;
   if(!confirm("Delete this contact?"+(cnt?`\n\n${cnt} document(s) are assigned to them and will be left without an owner.`:""))) return;
   db.contacts=db.contacts.filter(x=>x.id!==id);
   db.docs.forEach(d=>{ if(d.ownerId===id) d.ownerId=""; });
-  save(); renderContacts(); render();
+  save(); renderContacts(); render(); autoSync();
 }
 
 /* ---- Export / Import ---- */
 function exportData(){ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="data.json"; a.click(); }
-function importData(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{ try{ const obj=JSON.parse(e.target.result); if(!obj.folders||!obj.docs) throw 0; if(!obj.contacts) obj.contacts=[]; if(!confirm("Import will replace current data. Continue?")) return; db=obj; currentFolder="__ALL__"; save(); render(); if(currentTab==='contacts') renderContacts(); alert("Imported successfully."); }catch(err){ alert("Could not import: invalid data file."); } }; r.readAsText(file); ev.target.value=""; }
+function importData(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{ try{ let obj=JSON.parse(e.target.result); if(!obj.folders||!obj.docs) throw 0; obj=migrate(obj); if(!confirm("Import will replace current data. Continue?")) return; db=obj; currentFolder="__ALL__"; save(); render(); if(currentTab==='contacts') renderContacts(); autoSync(); alert("Imported successfully."); }catch(err){ alert("Could not import: invalid data file."); } }; r.readAsText(file); ev.target.value=""; }
 
-/* ---- Boot: gate everything behind the token login ---- */
+/* ---- Boot: prefer live data.json from GitHub, then seed local ---- */
 (async function boot(){
-  if(!localStorage.getItem(STORE_KEY)){ try{ const res=await fetch('data.json',{cache:'no-store'}); if(res.ok){ const obj=await res.json(); if(obj.folders&&obj.docs){ if(!obj.contacts) obj.contacts=[]; db=obj; save(); } } }catch(e){} }
-  if(isAuthed()){
-    unlockApp();
-  } else {
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('loginToken').focus();
-  }
+  try{
+    const res=await fetch(GH.PATH+'?t='+Date.now(),{cache:'no-store'});
+    if(res.ok){ const obj=await res.json(); if(obj&&obj.folders&&obj.docs){ db=migrate(obj); save(); } }
+  }catch(e){}
+  renderTokenLight();
+  render();
 })();
 </script>
 </body>
