@@ -64,9 +64,26 @@
   .folder .count{margin-left:auto;font-size:11px;background:#eaeaef;color:var(--muted);border-radius:20px;padding:2px 9px;font-weight:600}
   .folder.active .count{background:rgba(255,255,255,.25);color:#fff}
   .folder .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .folder .chev{width:16px;text-align:center;font-size:10px;color:var(--muted);transition:.15s;flex:0 0 auto}
+  .folder.active .chev{color:#fff}
+  .folder .chev.open{transform:rotate(90deg)}
+  .subwrap{margin:0 0 4px 10px;padding-left:8px;border-left:1px solid var(--line)}
+  .subfolder{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:10px;cursor:pointer;margin-bottom:2px;font-size:13px;transition:.15s;color:var(--text)}
+  .subfolder:hover{background:#f0f0f3}
+  .subfolder.active{background:var(--blue);color:#fff}
+  .subfolder .count{margin-left:auto;font-size:10px;background:#eaeaef;color:var(--muted);border-radius:20px;padding:1px 8px;font-weight:600}
+  .subfolder.active .count{background:rgba(255,255,255,.25);color:#fff}
+  .subfolder .sfname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sub-add{font-size:11px;color:var(--blue);padding:6px 10px;cursor:pointer;border-radius:8px}
+  .sub-add:hover{background:#f0f6ff}
   main{flex:1;overflow-y:auto}
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:22px}
-  .stat{background:var(--card);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+  .stat{background:var(--card);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);cursor:pointer;transition:.16s;border:2px solid transparent}
+  .stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .stat.sel{border-color:var(--blue)}
+  .stat.exp.sel{border-color:var(--red)}
+  .stat.soon.sel{border-color:var(--warn)}
+  .stat.ok.sel{border-color:var(--ok)}
   .stat .num{font-size:32px;font-weight:600;color:var(--navy);letter-spacing:-.03em}
   .stat .lbl{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em;font-weight:500}
   .stat.exp .num{color:var(--red)}
@@ -256,7 +273,12 @@
       <input type="hidden" id="docId" />
       <div class="field">
         <label>Folder / Entity</label>
-        <select id="docFolder"></select>
+        <select id="docFolder" onchange="onDocFolderChange()"></select>
+      </div>
+      <div class="field">
+        <label>Subfolder (optional)</label>
+        <select id="docSubfolder"></select>
+        <div class="hint">Choose a subfolder, or pick <b>＋ New subfolder…</b> to create one inside this entity.</div>
       </div>
       <div class="field">
         <label>Document Name</label>
@@ -419,15 +441,26 @@ const SEED = {
     "4Sight Africa (Pty) Ltd","4Sight OT Automation (Pty) Ltd","4Sight OT Optimisation (Pty) Ltd",
     "4Sight OT Simulation (Pty) Ltd","4Sight Systems (Pty) Ltd","Dynamics Africa Services (Pty) Ltd","Namibia"
   ],
+  subfolders: {},   // { "<entity>": ["Agreements","Certificates", …] }
   contacts: [],
   docs: []
 };
 let db = load();
 let currentFolder = "__ALL__";
+let currentSub = "";          // "" = whole entity; otherwise the selected subfolder name
+let expandedFolders = {};     // { "<entity>": true } tracks which entities are expanded in the sidebar
 let currentTab = "docs";
 let pendingFile = undefined;
 
-function load(){ try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const o=JSON.parse(raw); if(!o.contacts) o.contacts=[]; return o; } }catch(e){} return JSON.parse(JSON.stringify(SEED)); }
+/* Ensure older data (without subfolders) is upgraded cleanly */
+function migrate(o){
+  if(!o.contacts) o.contacts=[];
+  if(!o.subfolders) o.subfolders={};
+  (o.folders||[]).forEach(f=>{ if(!Array.isArray(o.subfolders[f])) o.subfolders[f]=[]; });
+  (o.docs||[]).forEach(d=>{ if(typeof d.subfolder!=='string') d.subfolder=""; });
+  return o;
+}
+function load(){ try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ return migrate(JSON.parse(raw)); } }catch(e){} return migrate(JSON.parse(JSON.stringify(SEED))); }
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(db)); autoCommit(); }
 
 /* ===================== GITHUB SYNC ===================== */
@@ -553,7 +586,7 @@ async function pullFromGitHub(silent){
       const j=await r.json();
       const obj=JSON.parse(b64DecodeUnicode(j.content||""));
       if(obj && obj.folders && obj.docs){
-        if(!obj.contacts) obj.contacts=[];
+        migrate(obj);
         db=obj;
         localStorage.setItem(STORE_KEY, JSON.stringify(db));
         setSync('saved');
@@ -667,36 +700,115 @@ function switchTab(t){
 }
 
 function render(){ renderFolders(); renderStats(); renderTable(); }
-function renderFolders(){ const el=document.getElementById('folderList'); let h=folderRow("__ALL__","📁 All Documents",db.docs.length); db.folders.forEach(f=>{h+=folderRow(f,"🗂 "+f,db.docs.filter(d=>d.folder===f).length);}); el.innerHTML=h; }
-function folderRow(k,l,c){ const a=currentFolder===k?" active":""; return `<div class="folder${a}" onclick="selectFolder('${encodeURIComponent(k)}')"><span class="fname">${esc(l)}</span><span class="count">${c}</span></div>`; }
-function selectFolder(k){ currentFolder=decodeURIComponent(k); document.getElementById('searchBox').value=''; if(currentTab!=='docs') switchTab('docs'); render(); }
-function renderStats(){ const docs=db.docs; let exp=0,soon=0,valid=0; docs.forEach(d=>{const s=statusOf(d.expiry); if(s==='exp')exp++; else if(s==='soon')soon++; else if(s==='ok')valid++; }); document.getElementById('stats').innerHTML=`
-  <div class="stat"><div class="num">${docs.length}</div><div class="lbl">Total Documents</div></div>
-  <div class="stat soon"><div class="num">${soon}</div><div class="lbl">Expiring ≤ 30 days</div></div>
-  <div class="stat exp"><div class="num">${exp}</div><div class="lbl">Expired</div></div>
-  <div class="stat ok"><div class="num">${valid}</div><div class="lbl">Valid</div></div>`; }
+function renderFolders(){
+  const el=document.getElementById('folderList');
+  // "All Documents" row (no subfolders)
+  let h=`<div class="folder${currentFolder==="__ALL__"?" active":""}" onclick="selectFolder('${encodeURIComponent("__ALL__")}')"><span class="chev" style="visibility:hidden">▶</span><span class="fname">📁 All Documents</span><span class="count">${db.docs.length}</span></div>`;
+  db.folders.forEach(f=>{
+    const total=db.docs.filter(d=>d.folder===f).length;
+    const isOpen=!!expandedFolders[f];
+    const isActive=currentFolder===f && currentSub==="";
+    h+=`<div class="folder${isActive?" active":""}">
+          <span class="chev${isOpen?" open":""}" onclick="event.stopPropagation();toggleExpand('${encodeURIComponent(f)}')">▶</span>
+          <span class="fname" onclick="selectFolder('${encodeURIComponent(f)}')">🗂 ${esc(f)}</span>
+          <span class="count" onclick="selectFolder('${encodeURIComponent(f)}')">${total}</span>
+        </div>`;
+    if(isOpen){
+      const subs=(db.subfolders[f]||[]);
+      h+=`<div class="subwrap">`;
+      subs.forEach(s=>{
+        const cnt=db.docs.filter(d=>d.folder===f && d.subfolder===s).length;
+        const sActive=currentFolder===f && currentSub===s;
+        h+=`<div class="subfolder${sActive?" active":""}" onclick="selectSubfolder('${encodeURIComponent(f)}','${encodeURIComponent(s)}')"><span class="sfname">📂 ${esc(s)}</span><span class="count">${cnt}</span></div>`;
+      });
+      h+=`<div class="sub-add" onclick="addSubfolder('${encodeURIComponent(f)}')">＋ Add subfolder</div>`;
+      h+=`</div>`;
+    }
+  });
+  el.innerHTML=h;
+}
+function toggleExpand(enc){ const f=decodeURIComponent(enc); expandedFolders[f]=!expandedFolders[f]; renderFolders(); }
+function selectFolder(k){ currentFolder=decodeURIComponent(k); currentSub=""; if(currentFolder!=="__ALL__") expandedFolders[currentFolder]=true; document.getElementById('searchBox').value=''; if(currentTab!=='docs') switchTab('docs'); render(); }
+function selectSubfolder(encF,encS){ currentFolder=decodeURIComponent(encF); currentSub=decodeURIComponent(encS); expandedFolders[currentFolder]=true; document.getElementById('searchBox').value=''; if(currentTab!=='docs') switchTab('docs'); render(); }
+
+/* ---- Subfolder CRUD ---- */
+function addSubfolder(encF){
+  const f=decodeURIComponent(encF);
+  const name=prompt(`New subfolder inside "${f}":`,""); if(name===null) return;
+  const n=name.trim(); if(!n) return;
+  if(!db.subfolders[f]) db.subfolders[f]=[];
+  if(db.subfolders[f].includes(n)){ alert("A subfolder with that name already exists here."); return; }
+  db.subfolders[f].push(n); expandedFolders[f]=true; save(); render();
+}
+function renameSubfolder(encF,encS){
+  const f=decodeURIComponent(encF), s=decodeURIComponent(encS);
+  const name=prompt(`Rename subfolder "${s}":`,s); if(name===null) return;
+  const n=name.trim(); if(!n||n===s) return;
+  if((db.subfolders[f]||[]).includes(n)){ alert("A subfolder with that name already exists here."); return; }
+  const idx=db.subfolders[f].indexOf(s); if(idx>=0) db.subfolders[f][idx]=n;
+  db.docs.forEach(d=>{ if(d.folder===f && d.subfolder===s) d.subfolder=n; });
+  if(currentFolder===f && currentSub===s) currentSub=n;
+  save(); render();
+}
+function deleteSubfolder(encF,encS){
+  const f=decodeURIComponent(encF), s=decodeURIComponent(encS);
+  const n=db.docs.filter(d=>d.folder===f && d.subfolder===s).length;
+  if(!confirm(`Delete subfolder "${s}"?`+(n?`\n\n${n} document(s) inside it will be moved up to "${f}" (not deleted).`:""))) return;
+  db.subfolders[f]=(db.subfolders[f]||[]).filter(x=>x!==s);
+  db.docs.forEach(d=>{ if(d.folder===f && d.subfolder===s) d.subfolder=""; });
+  if(currentFolder===f && currentSub===s) currentSub="";
+  save(); render();
+}
+function renderStats(){ const docs=db.docs; let exp=0,soon=0,valid=0; docs.forEach(d=>{const s=statusOf(d.expiry); if(s==='exp')exp++; else if(s==='soon')soon++; else if(s==='ok')valid++; });
+  const cur=document.getElementById('statusFilter').value;
+  const sel=v=>cur===v?' sel':'';
+  document.getElementById('stats').innerHTML=`
+  <div class="stat${sel('all')}" onclick="filterByStat('all')" title="Show all documents"><div class="num">${docs.length}</div><div class="lbl">Total Documents</div></div>
+  <div class="stat soon${sel('soon')}" onclick="filterByStat('soon')" title="Show documents expiring within 30 days"><div class="num">${soon}</div><div class="lbl">Expiring ≤ 30 days</div></div>
+  <div class="stat exp${sel('exp')}" onclick="filterByStat('exp')" title="Show expired documents"><div class="num">${exp}</div><div class="lbl">Expired</div></div>
+  <div class="stat ok${sel('ok')}" onclick="filterByStat('ok')" title="Show valid documents"><div class="num">${valid}</div><div class="lbl">Valid</div></div>`; }
+
+/* Clicking a stat card filters the table to that status (toggles off if already active) */
+function filterByStat(v){
+  const sf=document.getElementById('statusFilter');
+  sf.value=(sf.value===v && v!=='all')?'all':v;
+  if(currentTab!=='docs') switchTab('docs');
+  render();
+  document.getElementById('tableWrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 
 function renderTable(){
-  const name=currentFolder==="__ALL__"?"All Documents":currentFolder;
+  const name=currentFolder==="__ALL__"?"All Documents":(currentSub?`${currentFolder}  ›  ${currentSub}`:currentFolder);
   document.getElementById('currentFolderName').textContent=name;
   const tools=document.getElementById('folderTools');
-  tools.innerHTML = currentFolder==="__ALL__"?"":`<button class="btn-outline btn-sm" onclick="openFolderModal('${encodeURIComponent(currentFolder)}')">Rename</button> <button class="btn-soft-danger btn-sm" onclick="deleteFolder('${encodeURIComponent(currentFolder)}')">Delete Folder</button>`;
+  if(currentFolder==="__ALL__"){ tools.innerHTML=""; }
+  else if(currentSub){
+    tools.innerHTML=`<button class="btn-outline btn-sm" onclick="renameSubfolder('${encodeURIComponent(currentFolder)}','${encodeURIComponent(currentSub)}')">Rename Subfolder</button> <button class="btn-soft-danger btn-sm" onclick="deleteSubfolder('${encodeURIComponent(currentFolder)}','${encodeURIComponent(currentSub)}')">Delete Subfolder</button>`;
+  } else {
+    tools.innerHTML=`<button class="btn-outline btn-sm" onclick="openFolderModal('${encodeURIComponent(currentFolder)}')">Rename</button> <button class="btn-outline btn-sm" onclick="addSubfolder('${encodeURIComponent(currentFolder)}')">＋ Subfolder</button> <button class="btn-soft-danger btn-sm" onclick="deleteFolder('${encodeURIComponent(currentFolder)}')">Delete Folder</button>`;
+  }
   const q=(document.getElementById('searchBox').value||"").toLowerCase();
   const sf=document.getElementById('statusFilter').value;
   let rows=db.docs.filter(d=>currentFolder==="__ALL__"||d.folder===currentFolder);
+  if(currentFolder!=="__ALL__" && currentSub!=="") rows=rows.filter(d=>d.subfolder===currentSub);
   if(sf!=="all") rows=rows.filter(d=>statusOf(d.expiry)===sf);
   if(q) rows=rows.filter(d=>{const c=d.ownerId?contactById(d.ownerId):null;return (d.name+" "+d.type+" "+d.notes+" "+d.folder+" "+(c?c.name+" "+c.email:"")).toLowerCase().includes(q);});
   rows.sort((a,b)=>{const da=daysUntil(a.expiry),dbb=daysUntil(b.expiry);if(da===null&&dbb===null)return a.name.localeCompare(b.name);if(da===null)return 1;if(dbb===null)return -1;return da-dbb;});
   const wrap=document.getElementById('tableWrap');
   if(rows.length===0){ wrap.innerHTML=`<div class="card-table"><div class="empty">No documents here yet.<br><br><button class="btn-primary" onclick="openDocModal()">＋ Add your first document</button></div></div>`; return; }
-  let h=`<div class="card-table"><table><thead><tr><th>Document</th><th>Type</th>${currentFolder==="__ALL__"?"<th>Entity</th>":""}<th>Review</th><th>Expiry / Reminder</th><th>Owner</th><th>Actions</th></tr></thead><tbody>`;
+  // Show the Entity column on All Documents; show a Subfolder column when inside an entity (whole-entity view)
+  const showEntity=currentFolder==="__ALL__";
+  const showSubCol=currentFolder!=="__ALL__" && currentSub==="";
+  let h=`<div class="card-table"><table><thead><tr><th>Document</th><th>Type</th>${showEntity?"<th>Entity</th>":""}${showSubCol?"<th>Subfolder</th>":""}<th>Review</th><th>Expiry / Reminder</th><th>Owner</th><th>Actions</th></tr></thead><tbody>`;
   rows.forEach(d=>{
     const nameCell=d.url?`<a class="doclink" href="${esc(d.url)}" target="_blank">${esc(d.name)}</a>`:esc(d.name);
     const fileCell=d.fileName?`<div class="hint">📎 <a class="doclink" href="javascript:void(0)" onclick="openStoredFile('${d.id}')">${esc(d.fileName)}</a></div>`:"";
     const c=d.ownerId?contactById(d.ownerId):null;
     const ownerCell=c?`<div class="owner-name">${esc(c.name)}</div><div class="owner-mail">${esc(c.email)}</div>`:`<span class="hint">— none —</span>`;
     const mailBtn=(c&&c.email)?`<button class="btn-mail btn-sm" onclick="draftEmail('${d.id}')">📧 Email Owner</button>`:"";
-    h+=`<tr><td>${nameCell}${fileCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td><td>${esc(d.type)||'—'}</td>${currentFolder==="__ALL__"?`<td>${esc(d.folder)}</td>`:""}<td>${fmtDate(d.review)}</td><td>${expiryPill(d.expiry)}</td><td>${ownerCell}</td><td><div class="row-actions">${mailBtn}<button class="btn-outline btn-sm" onclick="openDocModal('${d.id}')">Edit</button><button class="btn-soft-danger btn-sm" onclick="deleteDoc('${d.id}')">Del</button></div></td></tr>`;
+    const entityCell=showEntity?`<td>${esc(d.folder)}${d.subfolder?`<div class="hint">📂 ${esc(d.subfolder)}</div>`:""}</td>`:"";
+    const subCell=showSubCol?`<td>${d.subfolder?esc(d.subfolder):'<span class="hint">—</span>'}</td>`:"";
+    h+=`<tr><td>${nameCell}${fileCell}${d.notes?`<div class="hint">${esc(d.notes)}</div>`:""}</td><td>${esc(d.type)||'—'}</td>${entityCell}${subCell}<td>${fmtDate(d.review)}</td><td>${expiryPill(d.expiry)}</td><td>${ownerCell}</td><td><div class="row-actions">${mailBtn}<button class="btn-outline btn-sm" onclick="openDocModal('${d.id}')">Edit</button><button class="btn-soft-danger btn-sm" onclick="deleteDoc('${d.id}')">Del</button></div></td></tr>`;
   });
   h+=`</tbody></table></div>`; wrap.innerHTML=h;
 }
@@ -722,11 +834,32 @@ function fillOwnerSelect(sel,selectedId){
   sel.innerHTML=`<option value="">— none —</option>`+db.contacts.map(c=>`<option value="${c.id}">${esc(c.name)}${c.email?' ('+esc(c.email)+')':''}</option>`).join('');
   if(selectedId) sel.value=selectedId;
 }
+function fillSubfolderSelect(folder, selectedSub){
+  const ss=document.getElementById('docSubfolder');
+  const subs=(db.subfolders[folder]||[]);
+  ss.innerHTML=`<option value="">— none —</option>`+subs.map(s=>`<option>${esc(s)}</option>`).join('')+`<option value="__NEW__">＋ New subfolder…</option>`;
+  ss.value=(selectedSub&&subs.includes(selectedSub))?selectedSub:"";
+}
+function onDocFolderChange(){ fillSubfolderSelect(document.getElementById('docFolder').value, ""); }
+document.addEventListener('change',function(e){
+  if(e.target && e.target.id==='docSubfolder' && e.target.value==='__NEW__'){
+    const f=document.getElementById('docFolder').value;
+    const name=prompt(`New subfolder inside "${f}":`,"");
+    const n=(name||"").trim();
+    if(n){
+      if(!db.subfolders[f]) db.subfolders[f]=[];
+      if(!db.subfolders[f].includes(n)){ db.subfolders[f].push(n); save(); }
+      fillSubfolderSelect(f,n);
+    } else {
+      fillSubfolderSelect(f,"");
+    }
+  }
+});
 function openDocModal(id){
   const sel=document.getElementById('docFolder'); sel.innerHTML=db.folders.map(f=>`<option>${esc(f)}</option>`).join('');
   const own=document.getElementById('docOwner');
-  if(id){ const d=db.docs.find(x=>x.id===id); document.getElementById('docModalTitle').textContent="Edit Document"; document.getElementById('docId').value=d.id; sel.value=d.folder; document.getElementById('docName').value=d.name; document.getElementById('docType').value=d.type||''; document.getElementById('docReview').value=d.review||''; document.getElementById('docExpiry').value=d.expiry||''; document.getElementById('docUrl').value=d.url||''; document.getElementById('docNotes').value=d.notes||''; fillOwnerSelect(own,d.ownerId||""); }
-  else{ document.getElementById('docModalTitle').textContent="Add Document"; ['docId','docName','docType','docReview','docExpiry','docUrl','docNotes'].forEach(i=>document.getElementById(i).value=''); if(currentFolder!=="__ALL__") sel.value=currentFolder; fillOwnerSelect(own,""); }
+  if(id){ const d=db.docs.find(x=>x.id===id); document.getElementById('docModalTitle').textContent="Edit Document"; document.getElementById('docId').value=d.id; sel.value=d.folder; fillSubfolderSelect(d.folder,d.subfolder||""); document.getElementById('docName').value=d.name; document.getElementById('docType').value=d.type||''; document.getElementById('docReview').value=d.review||''; document.getElementById('docExpiry').value=d.expiry||''; document.getElementById('docUrl').value=d.url||''; document.getElementById('docNotes').value=d.notes||''; fillOwnerSelect(own,d.ownerId||""); }
+  else{ document.getElementById('docModalTitle').textContent="Add Document"; ['docId','docName','docType','docReview','docExpiry','docUrl','docNotes'].forEach(i=>document.getElementById(i).value=''); if(currentFolder!=="__ALL__") sel.value=currentFolder; fillSubfolderSelect(sel.value, currentSub||""); fillOwnerSelect(own,""); }
   pendingFile=undefined; document.getElementById('docFile').value="";
   const ex=id?db.docs.find(x=>x.id===id):null;
   document.getElementById('fileHint').textContent=(ex&&ex.fileName)?"✔ Currently attached: "+ex.fileName+" (choose a new file to replace)":"PDF, Word, image, etc. Auto-committed to the repo when a token is connected. Max ~15 MB.";
@@ -736,7 +869,8 @@ function closeDocModal(){ document.getElementById('docOverlay').classList.remove
 async function saveDoc(){
   const name=document.getElementById('docName').value.trim(); if(!name){ alert("Please enter a document name."); return; }
   const ex=db.docs.find(x=>x.id===document.getElementById('docId').value);
-  const rec={ id:document.getElementById('docId').value||uid(), folder:document.getElementById('docFolder').value, name, type:document.getElementById('docType').value.trim(), ownerId:document.getElementById('docOwner').value, review:document.getElementById('docReview').value, expiry:document.getElementById('docExpiry').value, url:document.getElementById('docUrl').value.trim(), notes:document.getElementById('docNotes').value.trim(), fileName:(ex&&ex.fileName)||"", ghFilePath:(ex&&ex.ghFilePath)||"" };
+  let subVal=document.getElementById('docSubfolder').value; if(subVal==='__NEW__') subVal="";
+  const rec={ id:document.getElementById('docId').value||uid(), folder:document.getElementById('docFolder').value, subfolder:subVal, name, type:document.getElementById('docType').value.trim(), ownerId:document.getElementById('docOwner').value, review:document.getElementById('docReview').value, expiry:document.getElementById('docExpiry').value, url:document.getElementById('docUrl').value.trim(), notes:document.getElementById('docNotes').value.trim(), fileName:(ex&&ex.fileName)||"", ghFilePath:(ex&&ex.ghFilePath)||"" };
   if(pendingFile){
     await saveFile(rec.id,pendingFile);
     rec.fileName=pendingFile.name;
@@ -756,11 +890,11 @@ function closeFolderModal(){ document.getElementById('folderOverlay').classList.
 function saveFolder(){
   const name=document.getElementById('folderName').value.trim(); const old=document.getElementById('folderOldName').value;
   if(!name){ alert("Please enter a folder name."); return; }
-  if(old){ if(name!==old&&db.folders.includes(name)){alert("A folder with that name already exists.");return;} const idx=db.folders.indexOf(old); db.folders[idx]=name; db.docs.forEach(d=>{if(d.folder===old)d.folder=name;}); if(currentFolder===old)currentFolder=name; }
-  else{ if(db.folders.includes(name)){alert("A folder with that name already exists.");return;} db.folders.push(name); }
+  if(old){ if(name!==old&&db.folders.includes(name)){alert("A folder with that name already exists.");return;} const idx=db.folders.indexOf(old); db.folders[idx]=name; db.docs.forEach(d=>{if(d.folder===old)d.folder=name;}); if(db.subfolders[old]){ db.subfolders[name]=db.subfolders[old]; if(name!==old) delete db.subfolders[old]; } if(currentFolder===old)currentFolder=name; if(expandedFolders[old]){ expandedFolders[name]=true; if(name!==old) delete expandedFolders[old]; } }
+  else{ if(db.folders.includes(name)){alert("A folder with that name already exists.");return;} db.folders.push(name); db.subfolders[name]=[]; }
   save(); closeFolderModal(); render();
 }
-function deleteFolder(enc){ const f=decodeURIComponent(enc); const n=db.docs.filter(d=>d.folder===f).length; if(!confirm(`Delete folder "${f}"?`+(n?`\n\nThis will also delete ${n} document(s) inside it.`:""))) return; db.folders=db.folders.filter(x=>x!==f); db.docs=db.docs.filter(d=>d.folder!==f); if(currentFolder===f)currentFolder="__ALL__"; save(); render(); }
+function deleteFolder(enc){ const f=decodeURIComponent(enc); const n=db.docs.filter(d=>d.folder===f).length; if(!confirm(`Delete folder "${f}"?`+(n?`\n\nThis will also delete ${n} document(s) inside it.`:""))) return; db.folders=db.folders.filter(x=>x!==f); db.docs=db.docs.filter(d=>d.folder!==f); delete db.subfolders[f]; delete expandedFolders[f]; if(currentFolder===f){currentFolder="__ALL__";currentSub="";} save(); render(); }
 
 /* ---- Contact CRUD ---- */
 function openContactModal(id){
@@ -789,7 +923,7 @@ function deleteContact(id){
 
 /* ---- Export / Import ---- */
 function exportData(){ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="data.json"; a.click(); }
-function importData(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{ try{ const obj=JSON.parse(e.target.result); if(!obj.folders||!obj.docs) throw 0; if(!obj.contacts) obj.contacts=[]; if(!confirm("Import will replace current data (and sync to GitHub). Continue?")) return; db=obj; currentFolder="__ALL__"; save(); render(); if(currentTab==='contacts') renderContacts(); alert("Imported successfully."); }catch(err){ alert("Could not import: invalid data file."); } }; r.readAsText(file); ev.target.value=""; }
+function importData(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>{ try{ const obj=JSON.parse(e.target.result); if(!obj.folders||!obj.docs) throw 0; migrate(obj); if(!confirm("Import will replace current data (and sync to GitHub). Continue?")) return; db=obj; currentFolder="__ALL__"; currentSub=""; save(); render(); if(currentTab==='contacts') renderContacts(); alert("Imported successfully."); }catch(err){ alert("Could not import: invalid data file."); } }; r.readAsText(file); ev.target.value=""; }
 
 /* ---- Boot ---- */
 (async function boot(){
